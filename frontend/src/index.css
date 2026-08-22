@@ -792,3 +792,118 @@ span.flatpickr-weekday,
 }
 
 @import "leaflet/dist/leaflet.css";
+
+/* =========================================================
+   Investment Map Tooltip
+========================================================= */
+
+.investment-map-tooltip {
+  border: none !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* إخفاء سهم Leaflet الافتراضي */
+.investment-map-tooltip::before {
+  display: none !important;
+}
+
+/* إزالة المسافات الداخلية الافتراضية */
+.investment-map-tooltip .leaflet-tooltip-content {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* =========================================================
+   بطاقة الفرصة
+========================================================= */
+
+.investment-map-tooltip > div {
+  width: 270px;
+  max-width: 270px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  background: #ffffff;
+
+  padding: 14px;
+
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.15),
+    0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================================================
+   الوضع الداكن
+========================================================= */
+
+.dark .investment-map-tooltip > div {
+  border-color: #374151;
+  background: #111827;
+
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.45),
+    0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* =========================================================
+   زر تفاصيل الفرصة
+========================================================= */
+
+.investment-map-tooltip a {
+  display: block;
+
+  width: 100%;
+
+  margin-top: 12px;
+
+  border-radius: 8px;
+
+  background: #465fff;
+
+  padding: 8px 10px;
+
+  color: #ffffff !important;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  line-height: 1.4;
+
+  text-align: center;
+
+  text-decoration: none !important;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.investment-map-tooltip a:hover {
+  background: #3641d8;
+}
+
+.investment-map-tooltip a:active {
+  transform: scale(0.98);
+}
+
+/* =========================================================
+   نصوص البطاقة
+========================================================= */
+
+.investment-map-tooltip h3 {
+  margin: 0;
+
+  color: #1f2937;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  line-height: 1.6;
+}
+
+.dark .investment-map-tooltip h3 {
+  color: #f9fafb;
+}

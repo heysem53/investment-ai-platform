@@ -1,13 +1,48 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 
+// Layout
+import AppLayout from "./layout/AppLayout";
+import { ScrollToTop } from "./components/common/ScrollToTop";
+
+// Authentication
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
-import NotFound from "./pages/OtherPage/NotFound";
 
+// Dashboard
+import Home from "./pages/Dashboard/Home";
+
+// Opportunities
+import Opportunities from "./pages/Opportunities/Opportunities";
+import OpportunityDetails from "./pages/Opportunities/OpportunityDetails";
+
+// Investment Platform
+import InvestmentMap from "./pages/InvestmentMap/InvestmentMap";
+import Sectors from "./pages/Sectors/Sectors";
+import Locations from "./pages/Locations/Locations";
+import Investors from "./pages/Investors/Investors";
+import FinancialData from "./pages/FinancialData/FinancialData";
+import Contracts from "./pages/Contracts/Contracts";
+import Attachments from "./pages/Attachments/Attachments";
+import Reports from "./pages/Reports/Reports";
+import TablesData from "./pages/TablesData/TablesData";
+
+// AI
+import OpportunityAnalysis from "./pages/AIAnalysis/OpportunityAnalysis";
+
+// Other Pages
 import UserProfiles from "./pages/UserProfiles";
 import Calendar from "./pages/Calendar";
 import Blank from "./pages/Blank";
+import ApiTest from "./pages/ApiTest";
+import NotFound from "./pages/OtherPage/NotFound";
 
+// Forms
+import FormElements from "./pages/Forms/FormElements";
+
+// Tables
+import BasicTables from "./pages/Tables/BasicTables";
+
+// UI Elements
 import Videos from "./pages/UiElements/Videos";
 import Images from "./pages/UiElements/Images";
 import Alerts from "./pages/UiElements/Alerts";
@@ -15,40 +50,9 @@ import Badges from "./pages/UiElements/Badges";
 import Avatars from "./pages/UiElements/Avatars";
 import Buttons from "./pages/UiElements/Buttons";
 
+// Charts
 import LineChart from "./pages/Charts/LineChart";
 import BarChart from "./pages/Charts/BarChart";
-
-import BasicTables from "./pages/Tables/BasicTables";
-import FormElements from "./pages/Forms/FormElements";
-
-import AppLayout from "./layout/AppLayout";
-import { ScrollToTop } from "./components/common/ScrollToTop";
-import Home from "./pages/Dashboard/Home";
-
-import Opportunities from "./pages/Opportunities/Opportunities";
-
-import OpportunityDetails from "./pages/Opportunities/OpportunityDetails";
-import InvestmentMap from "./pages/InvestmentMap/InvestmentMap";
-
-import ApiTest from "./pages/ApiTest";
-
-import Sectors from "./pages/Sectors/Sectors";
-
-import Locations from "./pages/Locations/Locations";
-
-import Investors from "./pages/Investors/Investors";
-
-import FinancialData from "./pages/FinancialData/FinancialData";
-
-import Contracts from "./pages/Contracts/Contracts";
-
-import Attachments from "./pages/Attachments/Attachments";
-
-import AIAnalysis from "./pages/AIAnalysis/AIAnalysis";
-
-import Reports from "./pages/Reports/Reports.tsx";
-
-import TablesData from "./pages/TablesData/TablesData";
 
 
 export default function App() {
@@ -58,13 +62,20 @@ export default function App() {
 
       <Routes>
 
-        {/* Dashboard Layout */}
+        {/* =====================================================
+            Dashboard Layout
+        ===================================================== */}
         <Route element={<AppLayout />}>
 
-          {/* الرئيسية */}
-          <Route index path="/" element={<Home />} />
+          {/* Dashboard */}
+          <Route
+            path="/"
+            element={<Home />}
+          />
 
-          {/* منصة الاستثمار */}
+          {/* =================================================
+              Investment Platform
+          ================================================= */}
           <Route
             path="/map"
             element={<InvestmentMap />}
@@ -75,16 +86,19 @@ export default function App() {
             element={<Sectors />}
           />
 
+          {/* Opportunities */}
           <Route
             path="/opportunities"
             element={<Opportunities />}
           />
 
+          {/* Opportunity Details */}
           <Route
-          path="/opportunities/:code"
-          element={<OpportunityDetails />}
+            path="/opportunities/:code"
+            element={<OpportunityDetails />}
           />
 
+          {/* Opportunity Management */}
           <Route
             path="/opportunities/ready"
             element={<Blank />}
@@ -95,11 +109,17 @@ export default function App() {
             element={<Blank />}
           />
 
+          {/* =================================================
+              Analytics
+          ================================================= */}
           <Route
             path="/analytics"
             element={<Blank />}
           />
 
+          {/* =================================================
+              Investors & Data
+          ================================================= */}
           <Route
             path="/investors"
             element={<Investors />}
@@ -120,6 +140,9 @@ export default function App() {
             element={<Locations />}
           />
 
+          {/* =================================================
+              Reports & Documents
+          ================================================= */}
           <Route
             path="/reports"
             element={<Reports />}
@@ -135,40 +158,46 @@ export default function App() {
             element={<Attachments />}
           />
 
-          {/* الذكاء الاصطناعي */}
-          
-          <Route
-            path="/ai-analysis"
-            element={<AIAnalysis />}
-          />
+          {/* =================================================
+                  Artificial Intelligence
+              ================================================= */}
+              
+              {/* صفحة التحليل الذكي للفرصة */}
+              <Route
+                path="/ai/opportunity-analysis/:code"
+                element={<OpportunityAnalysis />}
+              />
+              
+              {/* صفحات AI المستقبلية */}
+              <Route
+                path="/ai/investment-evaluation"
+                element={<Blank />}
+              />
+              
+              <Route
+                path="/ai/recommendations"
+                element={<Blank />}
+              />
 
-          <Route
-            path="/ai/opportunity-analysis"
-            element={<Blank />}
-          />
-
-          <Route
-            path="/ai/investment-evaluation"
-            element={<Blank />}
-          />
-
-          <Route
-            path="/ai/recommendations"
-            element={<Blank />}
-          />
-
+          {/* =================================================
+              Database Tables
+          ================================================= */}
           <Route
             path="/tables"
             element={<TablesData />}
           />
 
-          {/* الإعدادات */}
+          {/* =================================================
+              Settings
+          ================================================= */}
           <Route
             path="/settings"
             element={<Blank />}
           />
 
-          {/* صفحات TailAdmin الأصلية */}
+          {/* =================================================
+              Original TailAdmin Pages
+          ================================================= */}
 
           <Route
             path="/profile"
@@ -241,7 +270,10 @@ export default function App() {
 
         </Route>
 
-        {/* Authentication */}
+        {/* =====================================================
+            Authentication
+        ===================================================== */}
+
         <Route
           path="/signin"
           element={<SignIn />}
@@ -251,13 +283,20 @@ export default function App() {
           path="/signup"
           element={<SignUp />}
         />
-        
-        <Route
-  path="/api-test"
-  element={<ApiTest />}
-/>
 
-        {/* 404 */}
+        {/* =====================================================
+            Development / API Test
+        ===================================================== */}
+
+        <Route
+          path="/api-test"
+          element={<ApiTest />}
+        />
+
+        {/* =====================================================
+            404
+        ===================================================== */}
+
         <Route
           path="*"
           element={<NotFound />}

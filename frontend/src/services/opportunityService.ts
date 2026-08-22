@@ -166,3 +166,50 @@ export async function getClosedOpportunities(
       "مغلقة"
   );
 }
+
+/* =========================================================
+   AI Analysis
+========================================================= */
+
+export interface AIAnalysisResult {
+  opportunity_id: number;
+  investment_score: number;
+  investment_grade: string;
+  summary: string;
+  strengths: string[];
+  risks: string[];
+  recommendations: string[];
+  score_breakdown: {
+    market_score: number;
+    financial_score: number;
+    location_score: number;
+    infrastructure_score: number;
+    readiness_score: number;
+    employment_score: number;
+    risk_score: number;
+  };
+  suitable_investors: string[];
+  estimated_readiness: number;
+}
+
+export async function analyzeOpportunity(
+  opportunityId: number
+): Promise<AIAnalysisResult> {
+  const response = await fetch(
+    `${API_BASE_URL}/ai/opportunities/${opportunityId}/analyze`,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to analyze opportunity: ${response.status}`
+    );
+  }
+
+  return response.json();
+}

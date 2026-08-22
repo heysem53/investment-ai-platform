@@ -7,18 +7,15 @@ import type {
   OpportunityStatus,
 } from "../../types/opportunity";
 
-import {
-  getOpportunities,
-} from "../../services/opportunityService";
+import { getOpportunities } from "../../services/opportunityService";
 
 import {
   MapContainer,
   TileLayer,
-  Marker,
-  Popup,
+  CircleMarker,
+  Tooltip,
 } from "react-leaflet";
 
-import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 /* =========================================================
@@ -43,9 +40,7 @@ const sectors = [
    الحالات
 ========================================================= */
 
-const statuses: Array<
-  "الكل" | OpportunityStatus
-> = [
+const statuses: Array<"الكل" | OpportunityStatus> = [
   "الكل",
   "فرصة استراتيجية",
   "فرصة جديدة",
@@ -57,51 +52,14 @@ const statuses: Array<
 ];
 
 /* =========================================================
-   إحداثيات الخريطة المؤقتة
-   سيتم لاحقًا استبدالها بإحداثيات GIS حقيقية
+   مركز الخريطة
+   دير الزور
 ========================================================= */
 
-const markerPositions: Record<
-  string,
-  { x: number; y: number }
-> = {
-  "DZ-001": { x: 48, y: 42 },
-  "DZ-002": { x: 55, y: 35 },
-  "DZ-003": { x: 61, y: 48 },
-  "DZ-004": { x: 67, y: 30 },
-  "DZ-005": { x: 38, y: 58 },
-  "DZ-006": { x: 73, y: 58 },
-  "DZ-007": { x: 28, y: 36 },
-  "DZ-008": { x: 25, y: 70 },
-  "DZ-009": { x: 52, y: 68 },
-  "DZ-010": { x: 78, y: 42 },
-  "DZ-011": { x: 70, y: 24 },
-  "DZ-012": { x: 43, y: 22 },
-  "DZ-013": { x: 58, y: 55 },
-  "DZ-014": { x: 35, y: 32 },
-  "DZ-015": { x: 63, y: 65 },
-  "DZ-016": { x: 82, y: 52 },
-  "DZ-017": { x: 46, y: 74 },
-  "DZ-018": { x: 32, y: 62 },
-  "DZ-019": { x: 57, y: 76 },
-  "DZ-020": { x: 22, y: 50 },
-  "DZ-021": { x: 30, y: 78 },
-  "DZ-022": { x: 37, y: 82 },
-  "DZ-023": { x: 68, y: 73 },
-  "DZ-024": { x: 75, y: 78 },
-  "DZ-025": { x: 62, y: 35 },
-  "DZ-026": { x: 72, y: 68 },
-  "DZ-027": { x: 50, y: 25 },
-  "DZ-028": { x: 44, y: 64 },
-  "DZ-029": { x: 20, y: 66 },
-  "DZ-030": { x: 66, y: 82 },
-  "DZ-031": { x: 40, y: 45 },
-  "DZ-032": { x: 53, y: 88 },
-  "DZ-033": { x: 60, y: 60 },
-  "DZ-034": { x: 34, y: 48 },
-  "DZ-035": { x: 76, y: 58 },
-  "DZ-036": { x: 58, y: 42 },
-};
+const DEIR_EZ_ZOR_CENTER: [number, number] = [
+  35.335,
+  40.14,
+];
 
 /* =========================================================
    الصفحة
@@ -110,8 +68,7 @@ const markerPositions: Record<
 export default function InvestmentMap() {
   const [search, setSearch] = useState("");
 
-  const [sector, setSector] =
-    useState("الكل");
+  const [sector, setSector] = useState("الكل");
 
   const [status, setStatus] =
     useState<"الكل" | OpportunityStatus>("الكل");
@@ -119,8 +76,7 @@ export default function InvestmentMap() {
   const [opportunities, setOpportunities] =
     useState<Opportunity[]>([]);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
   const [error, setError] =
     useState<string | null>(null);
@@ -304,9 +260,7 @@ export default function InvestmentMap() {
                 type="text"
                 value={search}
                 onChange={(event) =>
-                  setSearch(
-                    event.target.value
-                  )
+                  setSearch(event.target.value)
                 }
                 placeholder="ابحث عن فرصة أو موقع..."
                 className="
@@ -339,9 +293,7 @@ export default function InvestmentMap() {
               <select
                 value={sector}
                 onChange={(event) =>
-                  setSector(
-                    event.target.value
-                  )
+                  setSector(event.target.value)
                 }
                 className="
                   h-11
@@ -476,203 +428,163 @@ export default function InvestmentMap() {
               )}
 
               {/* =================================================
-                  الخريطة
+                  Leaflet Map
               ================================================= */}
 
               {!loading && !error && (
-                <div className="relative h-[620px] overflow-hidden bg-gray-100 dark:bg-gray-950">
+                <div className="h-[620px] w-full">
 
-                  {/* شبكة الخريطة */}
+                  <MapContainer
+                    center={DEIR_EZ_ZOR_CENTER}
+                    zoom={9}
+                    scrollWheelZoom={true}
+                    className="h-full w-full"
+                  >
 
-                  <div
-                    className="absolute inset-0 opacity-60 dark:opacity-30"
-                    style={{
-                      backgroundImage: `
-                        linear-gradient(
-                          to right,
-                          rgba(148,163,184,0.18) 1px,
-                          transparent 1px
-                        ),
-                        linear-gradient(
-                          to bottom,
-                          rgba(148,163,184,0.18) 1px,
-                          transparent 1px
-                        )
-                      `,
-                      backgroundSize:
-                        "50px 50px",
-                    }}
-                  />
+                    <TileLayer
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
 
-                  {/* منطقة الخريطة */}
+                    {filteredOpportunities.map(
+  (opportunity) => {
+    const coordinates =
+      getOpportunityCoordinates(
+        opportunity
+      );
 
-                  <div className="absolute left-[12%] top-[10%] h-[75%] w-[75%] rounded-[45%] border-2 border-dashed border-gray-300 bg-white/40 dark:border-gray-700 dark:bg-white/[0.02]" />
+    return (
+      <CircleMarker
+        key={opportunity.code}
+        center={coordinates}
+        radius={10}
+        pathOptions={{
+          color: "#ffffff",
+          weight: 3,
+          fillColor:
+            getLeafletMarkerColor(
+              opportunity.status
+            ),
+          fillOpacity: 0.9,
+        }}
+        eventHandlers={{
+          mouseover: (event) => {
+            event.target.openTooltip();
+          },
+          mouseout: (event) => {
+            event.target.closeTooltip();
+          },
+        }}
+      >
+        <Tooltip
+          direction="top"
+          offset={[0, -0]}
+          opacity={1}
+          sticky={false}
+          className="investment-map-tooltip"
+        >
+          <div
+            dir="rtl"
+            className="w-[270px] text-right"
+          >
+            {/* رأس البطاقة */}
+            <div className="mb-3 flex items-center justify-between gap-3 border-b border-gray-200 pb-2">
+              <span className="text-xs font-bold text-brand-600">
+                {opportunity.code}
+              </span>
 
-                  {/* عنوان المحافظة */}
+              <span
+                className="rounded-full px-2 py-1 text-[10px] font-semibold text-white"
+                style={{
+                  backgroundColor:
+                    getLeafletMarkerColor(
+                      opportunity.status
+                    ),
+                }}
+              >
+                {opportunity.status}
+              </span>
+            </div>
 
-                  <div className="absolute left-1/2 top-5 -translate-x-1/2">
-                    <div className="rounded-lg bg-white/90 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:bg-gray-900/90 dark:text-gray-300">
-                      محافظة دير الزور
-                    </div>
-                  </div>
+            {/* اسم الفرصة */}
+            <div className="mb-3">
+              <div className="text-sm font-bold leading-6 text-gray-800">
+                {opportunity.name}
+              </div>
+            </div>
 
-                  {/* نهر الفرات - تمثيل بصري مؤقت */}
+            {/* البيانات */}
+            <div className="space-y-2 text-xs text-gray-600">
 
-                  <div className="absolute left-[47%] top-[5%] h-[90%] w-[70px] -rotate-[8deg] rounded-[50%] bg-blue-200/50 blur-sm dark:bg-blue-900/20" />
+              <div className="flex items-start gap-2">
+                <span className="shrink-0 font-semibold text-gray-500">
+                  القطاع:
+                </span>
 
-                  {/* =================================================
-                      نقاط الفرص
-                  ================================================= */}
+                <span>
+                  {opportunity.sector}
+                </span>
+              </div>
 
-                  {filteredOpportunities.map(
-                    (opportunity) => {
+              <div className="flex items-start gap-2">
+                <span className="shrink-0 font-semibold text-gray-500">
+                  الموقع:
+                </span>
 
-                      const position =
-                        markerPositions[
-                          opportunity.code
-                        ] ?? {
-                          x: 50,
-                          y: 50,
-                        };
+                <span>
+                  {opportunity.location}
+                </span>
+              </div>
 
-                      return (
-                        <Link
-                          key={opportunity.code}
-                          to={`/opportunities/${opportunity.code}`}
-                          className="group absolute -translate-x-1/2 -translate-y-1/2 focus:outline-none"
-                          style={{
-                            left: `${position.x}%`,
-                            top: `${position.y}%`,
-                          }}
-                          title={`عرض ${opportunity.name}`}
-                          aria-label={`عرض تفاصيل ${opportunity.name}`}
-                        >
+              <div className="flex items-start gap-2">
+                <span className="shrink-0 font-semibold text-gray-500">
+                  القيمة:
+                </span>
 
-                          <span
-                            className={`
-                              relative
-                              flex
-                              h-9
-                              w-9
-                              items-center
-                              justify-center
-                              rounded-full
-                              border-4
-                              border-white
-                              text-[10px]
-                              font-bold
-                              text-white
-                              shadow-lg
-                              transition
-                              duration-200
-                              group-hover:scale-125
-                              group-focus:scale-125
-                              dark:border-gray-900
-                              ${getMarkerColor(
-                                opportunity.status
-                              )}
-                            `}
-                          >
-
-                            {opportunity.code.replace(
-                              "DZ-",
-                              ""
-                            )}
-
-                            <span
-                              className={`
-                                absolute
-                                inset-[-6px]
-                                -z-10
-                                animate-ping
-                                rounded-full
-                                opacity-20
-                                ${getMarkerColor(
-                                  opportunity.status
-                                )}
-                              `}
-                            />
-
-                          </span>
-
-                        </Link>
-                      );
+                <span className="font-semibold text-gray-700">
+                  {opportunity.value.toLocaleString(
+                    "en-US",
+                    {
+                      maximumFractionDigits: 2,
                     }
-                  )}
+                  )}{" "}
+                  مليون دولار
+                </span>
+              </div>
 
-                  {/* لا توجد نتائج */}
+            </div>
 
-                  {filteredOpportunities.length ===
-                    0 && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="rounded-xl bg-white px-6 py-4 text-sm text-gray-500 shadow-lg dark:bg-gray-900 dark:text-gray-400">
-                        لا توجد فرص تطابق معايير البحث.
-                      </div>
-                    </div>
-                  )}
+            {/* زر التفاصيل */}
+            <Link
+              to={`/opportunities/${opportunity.code}`}
+              className="
+                mt-4
+                block
+                rounded-lg
+                bg-brand-500
+                px-3
+                py-2
+                text-center
+                text-xs
+                font-semibold
+                leading-4
+                text-white
+                no-underline
+                transition
+                hover:bg-brand-600
+              "
+            >
+              عرض تفاصيل الفرصة
+            </Link>
+          </div>
+        </Tooltip>
+      </CircleMarker>
+    );
+  }
+)}
+                       
 
-                  {/* =================================================
-                      مفتاح الخريطة
-                  ================================================= */}
-
-                  <div className="absolute bottom-5 right-5 rounded-xl border border-gray-200 bg-white/95 p-4 shadow-lg dark:border-gray-800 dark:bg-gray-900/95">
-
-                    <p className="mb-3 text-xs font-semibold text-gray-700 dark:text-gray-300">
-                      حالة الفرصة
-                    </p>
-
-                    <div className="space-y-2">
-
-                      <LegendItem
-                        color="bg-green-500"
-                        label="نشطة"
-                      />
-
-                      <LegendItem
-                        color="bg-blue-500"
-                        label="جاهزة"
-                      />
-
-                      <LegendItem
-                        color="bg-yellow-500"
-                        label="قيد الدراسة"
-                      />
-
-                      <LegendItem
-                        color="bg-purple-500"
-                        label="فرصة استراتيجية"
-                      />
-
-                      <LegendItem
-                        color="bg-gray-500"
-                        label="حالات أخرى"
-                      />
-
-                    </div>
-
-                  </div>
-
-                  {/* =================================================
-                      التحكم بالتكبير
-                  ================================================= */}
-
-                  <div className="absolute bottom-5 left-5 flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-800 dark:bg-gray-900">
-
-                    <button
-                      type="button"
-                      className="flex h-10 w-10 items-center justify-center border-b border-gray-200 text-lg text-gray-600 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-800"
-                    >
-                      +
-                    </button>
-
-                    <button
-                      type="button"
-                      className="flex h-10 w-10 items-center justify-center text-lg text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
-                    >
-                      −
-                    </button>
-
-                  </div>
+                  </MapContainer>
 
                 </div>
               )}
@@ -714,16 +626,19 @@ export default function InvestmentMap() {
                       >
 
                         <span
-                          className={`
+                          className="
                             mt-1
                             h-3
                             w-3
                             shrink-0
                             rounded-full
-                            ${getMarkerColor(
-                              opportunity.status
-                            )}
-                          `}
+                          "
+                          style={{
+                            backgroundColor:
+                              getLeafletMarkerColor(
+                                opportunity.status
+                              ),
+                          }}
                         />
 
                         <span className="min-w-0 flex-1">
@@ -811,61 +726,80 @@ function MapMetric({
 }
 
 /* =========================================================
-   لون نقطة الخريطة
+   لون Marker حسب الحالة
 ========================================================= */
 
-function getMarkerColor(
+function getLeafletMarkerColor(
   status: OpportunityStatus
-) {
+): string {
   switch (status) {
     case "نشطة":
-      return "bg-green-500";
+      return "#22c55e";
 
     case "جاهزة":
-      return "bg-blue-500";
+      return "#3b82f6";
 
     case "قيد الدراسة":
-      return "bg-yellow-500";
+      return "#eab308";
 
     case "فرصة استراتيجية":
-      return "bg-purple-500";
+      return "#a855f7";
 
     case "فرصة جديدة":
-      return "bg-blue-500";
+      return "#3b82f6";
 
     case "إعادة تأهيل":
-      return "bg-orange-500";
+      return "#f97316";
 
     case "مغلقة":
-      return "bg-gray-500";
+      return "#6b7280";
 
     default:
-      return "bg-gray-500";
+      return "#6b7280";
   }
 }
 
 /* =========================================================
-   مفتاح الخريطة
+   إحداثيات الفرصة
 ========================================================= */
 
-function LegendItem({
-  color,
-  label,
-}: {
-  color: string;
-  label: string;
-}) {
-  return (
-    <div className="flex items-center gap-2">
+function getOpportunityCoordinates(
+  opportunity: Opportunity
+): [number, number] {
 
-      <span
-        className={`h-2.5 w-2.5 rounded-full ${color}`}
-      />
+  /*
+   * في المرحلة الحالية:
+   * إذا كانت بيانات Opportunity تحتوي لاحقًا على
+   * latitude / longitude سنستخدمها مباشرة.
+   *
+   * حاليًا نستخدم توزيعًا مؤقتًا حول دير الزور
+   * حتى لا تتجمع جميع الفرص في نقطة واحدة.
+   */
 
-      <span className="text-xs text-gray-600 dark:text-gray-400">
-        {label}
-      </span>
-
-    </div>
+  const numericCode = Number(
+    opportunity.code.replace("DZ-", "")
   );
+
+  const angle =
+    (numericCode * 137.5) % 360;
+
+  const radius =
+    0.015 +
+    ((numericCode * 17) % 100) / 100 * 0.35;
+
+  const radians =
+    (angle * Math.PI) / 180;
+
+  const latitude =
+    DEIR_EZ_ZOR_CENTER[0] +
+    Math.sin(radians) * radius;
+
+  const longitude =
+    DEIR_EZ_ZOR_CENTER[1] +
+    Math.cos(radians) * radius * 1.3;
+
+  return [
+    latitude,
+    longitude,
+  ];
 }

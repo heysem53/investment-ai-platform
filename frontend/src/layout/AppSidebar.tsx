@@ -509,7 +509,7 @@ const AppSidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* =====================================================
+           {/* =====================================================
           النظام الذكي
       ====================================================== */}
 
@@ -521,7 +521,10 @@ const AppSidebar: React.FC = () => {
         }`}
       >
         {isSidebarVisible ? (
-          <div className="rounded-xl bg-gray-50 p-3 dark:bg-white/[0.03]">
+          <Link
+            to="/ai/opportunity-analysis/DZ-001"
+            className="block rounded-xl bg-gray-50 p-3 transition hover:bg-brand-50 dark:bg-white/[0.03] dark:hover:bg-brand-500/5"
+          >
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-sm font-bold text-brand-500 dark:bg-brand-500/10">
                 AI
@@ -537,14 +540,15 @@ const AppSidebar: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
         ) : (
-          <div
+          <Link
+            to="/ai-analysis"
             title="النظام الذكي"
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-xs font-bold text-brand-500 dark:bg-brand-500/10"
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-xs font-bold text-brand-500 transition hover:bg-brand-100 dark:bg-brand-500/10 dark:hover:bg-brand-500/20"
           >
             AI
-          </div>
+          </Link>
         )}
       </div>
     </aside>

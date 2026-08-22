@@ -15,18 +15,23 @@ export type OpportunityData = {
   opportunity_code: string;
   name_ar: string;
   name_en: string;
+
   sector_id: string | number;
   sub_sector_id: string | number;
+
   location_id: string | number;
   ownership_id: string | number;
   project_type_id: string | number;
   investor_type_id: string | number;
   contract_type_id: string | number;
   provider_entity_id: string | number;
+
   project_scale_id: string | number | null;
   status_id: string | number;
+
   created_at: string;
   updated_at: string;
+
   is_active: boolean | string;
 };
 
@@ -401,7 +406,7 @@ export type AttachmentItem = {
 };
 
 /* =========================================================
-   استجابة API الكاملة
+   استجابة API الكاملة للفرصة
 ========================================================= */
 
 export type OpportunityApiResponse = {
@@ -463,9 +468,19 @@ export async function getOpportunityByCodeApi(
   );
 
   if (!response.ok) {
-    throw new Error(
-      `Failed to fetch opportunity: ${response.status}`
-    );
+    let message = `Failed to fetch opportunity: ${response.status}`;
+
+    try {
+      const errorResult = await response.json();
+
+      if (errorResult?.detail) {
+        message = errorResult.detail;
+      }
+    } catch {
+      // تجاهل خطأ قراءة الاستجابة
+    }
+
+    throw new Error(message);
   }
 
   const result = await response.json();
@@ -489,9 +504,19 @@ export async function getOpportunitiesApi(): Promise<
   );
 
   if (!response.ok) {
-    throw new Error(
-      `Failed to fetch opportunities: ${response.status}`
-    );
+    let message = `Failed to fetch opportunities: ${response.status}`;
+
+    try {
+      const errorResult = await response.json();
+
+      if (errorResult?.detail) {
+        message = errorResult.detail;
+      }
+    } catch {
+      // تجاهل خطأ قراءة الاستجابة
+    }
+
+    throw new Error(message);
   }
 
   const result = await response.json();
@@ -507,4 +532,96 @@ export async function getOpportunitiesApi(): Promise<
   }
 
   return data as OpportunityApiResponse[];
+}
+
+/* =========================================================
+   AI - أنواع التحليل الذكي
+========================================================= */
+
+export type AIScoreBreakdown = {
+  [key: string]: number | string | null;
+};
+
+export type AIAnalysisResult = {
+  opportunity_id: string | number;
+
+  investment_score: number;
+
+  investment_grade: string;
+
+  score_breakdown?: AIScoreBreakdown | null;
+
+  strengths?: string[];
+
+  risks?: string[];
+
+  recommendations?: string[];
+
+  financial_analysis?: Record<string, unknown> | null;
+
+  readiness_analysis?: Record<string, unknown> | null;
+
+  risk_analysis?: Record<string, unknown> | null;
+
+  [key: string]: unknown;
+};
+
+/* =========================================================
+   AI - تحليل فرصة استثمارية
+========================================================= */
+
+/*
+   FastAPI:
+
+   POST /api/ai/opportunities/{opportunity_id}/analyze
+
+   مثال:
+
+   POST http://127.0.0.1:8000/api/ai/opportunities/1/analyze
+
+   ملاحظة:
+   الـ Backend يحول ID:
+
+   1  -> DZ-001
+   2  -> DZ-002
+   3  -> DZ-003
+
+   لذلك نرسل opportunity_id وليس opportunity_code.
+*/
+
+export async function analyzeOpportunityApi(
+  opportunityId: string | number
+): Promise<AIAnalysisResult> {
+  const response = await fetch(
+    `${API_BASE_URL}/ai/opportunities/${encodeURIComponent(
+      String(opportunityId)
+    )}/analyze`,
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    let message = `AI analysis failed: ${response.status}`;
+
+    try {
+      const errorResult = await response.json();
+
+      if (errorResult?.detail) {
+        message = errorResult.detail;
+      }
+    } catch {
+      // تجاهل خطأ قراءة الاستجابة
+    }
+
+    throw new Error(message);
+  }
+
+  const result = await response.json();
+
+  return result as AIAnalysisResult;
 }
