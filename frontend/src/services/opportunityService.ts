@@ -3,36 +3,60 @@ import type {
   OpportunityStatus,
 } from "../types/opportunity";
 
-import { opportunities } from "../data/opportunities";
+const API_BASE_URL = "http://127.0.0.1:8000";
 
 /* =========================================================
-   جميع الفرص
+   جميع الفرص من FastAPI
 ========================================================= */
 
-export function getOpportunities(): Opportunity[] {
-  return opportunities;
+export async function getOpportunities(): Promise<Opportunity[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/opportunities`
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to load opportunities: ${response.status}`
+    );
+  }
+
+  return response.json();
 }
 
 /* =========================================================
    الحصول على فرصة حسب الرمز
 ========================================================= */
 
-export function getOpportunityByCode(
+export async function getOpportunityByCode(
   code: string
-): Opportunity | undefined {
-  return opportunities.find(
-    (opportunity) =>
-      opportunity.code === code
+): Promise<any> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/opportunities/${code}`
   );
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      return undefined;
+    }
+
+    throw new Error(
+      `Failed to load opportunity: ${response.status}`
+    );
+  }
+
+  return response.json();
 }
 
 /* =========================================================
    الفرص حسب القطاع
 ========================================================= */
 
-export function getOpportunitiesBySector(
+export async function getOpportunitiesBySector(
   sector: string
-): Opportunity[] {
+): Promise<Opportunity[]> {
+  const opportunities =
+    await getOpportunities();
+
   return opportunities.filter(
     (opportunity) =>
       opportunity.sector === sector
@@ -43,9 +67,12 @@ export function getOpportunitiesBySector(
    الفرص حسب الحالة
 ========================================================= */
 
-export function getOpportunitiesByStatus(
+export async function getOpportunitiesByStatus(
   status: OpportunityStatus
-): Opportunity[] {
+): Promise<Opportunity[]> {
+  const opportunities =
+    await getOpportunities();
+
   return opportunities.filter(
     (opportunity) =>
       opportunity.status === status
@@ -56,10 +83,13 @@ export function getOpportunitiesByStatus(
    إجمالي القيمة الاستثمارية
 ========================================================= */
 
-export function getTotalInvestment(
-  items: Opportunity[] = opportunities
-): number {
-  return items.reduce(
+export async function getTotalInvestment(
+  items?: Opportunity[]
+): Promise<number> {
+  const opportunities =
+    items ?? await getOpportunities();
+
+  return opportunities.reduce(
     (total, opportunity) =>
       total + opportunity.value,
     0
@@ -68,45 +98,36 @@ export function getTotalInvestment(
 
 /* =========================================================
    الفرص النشطة
-=========================================================
-
-   الحالات الحالية في البيانات:
-
-   - فرصة استراتيجية
-   - فرصة جديدة
-   - إعادة تأهيل
-
-   جميعها تعتبر فرصاً نشطة ما لم تكن:
-   - قيد الدراسة
-   - مغلقة
-
 ========================================================= */
 
-export function getActiveOpportunities(
-  items: Opportunity[] = opportunities
-): Opportunity[] {
-  return items.filter(
+export async function getActiveOpportunities(
+  items?: Opportunity[]
+): Promise<Opportunity[]> {
+  const opportunities =
+    items ?? await getOpportunities();
+
+  return opportunities.filter(
     (opportunity) =>
-      opportunity.status === "فرصة استراتيجية" ||
-      opportunity.status === "فرصة جديدة" ||
-      opportunity.status === "إعادة تأهيل"
+      opportunity.status ===
+        "فرصة استراتيجية" ||
+      opportunity.status ===
+        "فرصة جديدة" ||
+      opportunity.status ===
+        "إعادة تأهيل"
   );
 }
 
 /* =========================================================
    الفرص الجاهزة للاستثمار
-=========================================================
-
-   الجاهزية تعتمد على readiness وليس على status.
-
-   >= 80%  → جاهزة
-
 ========================================================= */
 
-export function getReadyOpportunities(
-  items: Opportunity[] = opportunities
-): Opportunity[] {
-  return items.filter(
+export async function getReadyOpportunities(
+  items?: Opportunity[]
+): Promise<Opportunity[]> {
+  const opportunities =
+    items ?? await getOpportunities();
+
+  return opportunities.filter(
     (opportunity) =>
       opportunity.readiness >= 80
   );
@@ -116,10 +137,13 @@ export function getReadyOpportunities(
    الفرص قيد الدراسة
 ========================================================= */
 
-export function getPendingOpportunities(
-  items: Opportunity[] = opportunities
-): Opportunity[] {
-  return items.filter(
+export async function getPendingOpportunities(
+  items?: Opportunity[]
+): Promise<Opportunity[]> {
+  const opportunities =
+    items ?? await getOpportunities();
+
+  return opportunities.filter(
     (opportunity) =>
       opportunity.status ===
       "قيد الدراسة"
@@ -130,10 +154,13 @@ export function getPendingOpportunities(
    الفرص المغلقة
 ========================================================= */
 
-export function getClosedOpportunities(
-  items: Opportunity[] = opportunities
-): Opportunity[] {
-  return items.filter(
+export async function getClosedOpportunities(
+  items?: Opportunity[]
+): Promise<Opportunity[]> {
+  const opportunities =
+    items ?? await getOpportunities();
+
+  return opportunities.filter(
     (opportunity) =>
       opportunity.status ===
       "مغلقة"

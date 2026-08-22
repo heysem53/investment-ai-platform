@@ -1,187 +1,480 @@
-import type { OpportunityStatus } from "../types/opportunity";
-
 /* =========================================================
-الأنواع العامة
+   الأنواع العامة
 ========================================================= */
 
 export type ReferenceItem = {
-[key: string]: string | boolean | null;
+  [key: string]: string | number | boolean | null | undefined;
 };
 
 /* =========================================================
-بيانات الفرصة الرئيسية
+   بيانات الفرصة الرئيسية
 ========================================================= */
 
 export type OpportunityData = {
-opportunity_id: string;
-opportunity_code: string;
-name_ar: string;
-name_en: string;
-sector_id: string;
-sub_sector_id: string;
-location_id: string;
-ownership_id: string;
-project_type_id: string;
-investor_type_id: string;
-contract_type_id: string;
-provider_entity_id: string;
-project_scale_id: string | null;
-status_id: string;
-created_at: string;
-updated_at: string;
-is_active: string;
+  opportunity_id: string | number;
+  opportunity_code: string;
+  name_ar: string;
+  name_en: string;
+  sector_id: string | number;
+  sub_sector_id: string | number;
+  location_id: string | number;
+  ownership_id: string | number;
+  project_type_id: string | number;
+  investor_type_id: string | number;
+  contract_type_id: string | number;
+  provider_entity_id: string | number;
+  project_scale_id: string | number | null;
+  status_id: string | number;
+  created_at: string;
+  updated_at: string;
+  is_active: boolean | string;
 };
 
 /* =========================================================
-البيانات المالية
+   البيانات المرجعية
+========================================================= */
+
+export type OpportunityReferences = {
+  sector_id?: string | number | null;
+  sector_name_ar?: string | null;
+  sector_name_en?: string | null;
+
+  sub_sector_id?: string | number | null;
+  sub_sector_name_ar?: string | null;
+  sub_sector_name_en?: string | null;
+
+  project_type_id?: string | number | null;
+  project_type_name_ar?: string | null;
+  project_type_name_en?: string | null;
+
+  project_scale_id?: string | number | null;
+  project_scale_name_ar?: string | null;
+  project_scale_name_en?: string | null;
+
+  investor_type_id?: string | number | null;
+  investor_type_name_ar?: string | null;
+  investor_type_name_en?: string | null;
+
+  contract_type_id?: string | number | null;
+  contract_type_name_ar?: string | null;
+  contract_type_name_en?: string | null;
+
+  status_id?: string | number | null;
+  status_name_ar?: string | null;
+  status_name_en?: string | null;
+
+  ownership_id?: string | number | null;
+  ownership_name_ar?: string | null;
+  ownership_name_en?: string | null;
+
+  provider_entity_id?: string | number | null;
+  provider_entity_name_ar?: string | null;
+  provider_entity_name_en?: string | null;
+
+  entity_type_id?: string | number | null;
+  provider_entity_type_name_ar?: string | null;
+  provider_entity_type_name_en?: string | null;
+};
+
+/* =========================================================
+   البيانات المالية
 ========================================================= */
 
 export type FinancialData = {
-financial_id: string;
-opportunity_id: string;
-estimated_cost: string;
-currency_id: string;
-estimation_source_ar: string;
-estimation_source_en: string;
-annual_investment_return: string;
-investment_period_years: string;
-construction_period_years: string;
-grace_period_years: string;
-financing_model_id: string;
-expected_return_rate: string;
-notes_ar: string;
-notes_en: string;
+  financial_id: string | number;
+  opportunity_id: string | number;
+
+  estimated_cost: string | number;
+  currency_id: string | number;
+
+  estimation_source_ar: string | null;
+  estimation_source_en: string | null;
+
+  annual_investment_return: string | number | null;
+
+  investment_period_years: string | number | null;
+  construction_period_years: string | number | null;
+  grace_period_years: string | number | null;
+
+  financing_model_id: string | number | null;
+
+  expected_return_rate: string | number | null;
+
+  notes_ar: string | null;
+  notes_en: string | null;
+
+  currency_code?: string | null;
+  currency_name_ar?: string | null;
+  currency_name_en?: string | null;
+  currency_symbol?: string | null;
+
+  financing_model_name_ar?: string | null;
+  financing_model_name_en?: string | null;
 };
 
 /* =========================================================
-البيانات المرتبطة
+   الموقع
+========================================================= */
+
+export type LocationData = {
+  location_id: string | number;
+  opportunity_id: string | number;
+
+  description_ar?: string | null;
+  description_en?: string | null;
+
+  administrative_unit_id?: string | number | null;
+  ownership_id?: string | number | null;
+
+  property_numbers?: string | null;
+
+  area_value?: string | number | null;
+  area_unit_id?: string | number | null;
+
+  expandable?: boolean | string | null;
+  expansion_area_value?: string | number | null;
+
+  latitude?: string | number | null;
+  longitude?: string | number | null;
+
+  map_url?: string | null;
+
+  notes_ar?: string | null;
+  notes_en?: string | null;
+
+  area_unit_name_ar?: string | null;
+  area_unit_name_en?: string | null;
+  area_unit_symbol?: string | null;
+
+  administrative_unit_name_ar?: string | null;
+  administrative_unit_name_en?: string | null;
+
+  administrative_unit_type_name_ar?: string | null;
+  administrative_unit_type_name_en?: string | null;
+
+  [key: string]: string | number | boolean | null | undefined;
+};
+
+/* =========================================================
+   تفاصيل المشروع
+========================================================= */
+
+export type ProjectDetailsData = {
+  project_detail_id: string | number;
+  opportunity_id: string | number;
+
+  description_ar?: string | null;
+  description_en?: string | null;
+
+  main_product_ar?: string | null;
+  main_product_en?: string | null;
+
+  main_product_specifications_ar?: string | null;
+  main_product_specifications_en?: string | null;
+
+  secondary_products_ar?: string | null;
+  secondary_products_en?: string | null;
+
+  production_capacity?: string | number | null;
+  capacity_unit_id?: string | number | null;
+
+  target_market_ar?: string | null;
+  target_market_en?: string | null;
+
+  economic_social_justification_ar?: string | null;
+  economic_social_justification_en?: string | null;
+
+  capacity_unit_name_ar?: string | null;
+  capacity_unit_name_en?: string | null;
+  capacity_unit_symbol?: string | null;
+
+  [key: string]: string | number | boolean | null | undefined;
+};
+
+/* =========================================================
+   العمالة
+========================================================= */
+
+export type EmploymentData = {
+  employment_id: string | number;
+  opportunity_id: string | number;
+
+  local_specialized_workers?: string | number | null;
+  local_unskilled_workers?: string | number | null;
+  local_total_workers?: string | number | null;
+
+  foreign_specialized_workers?: string | number | null;
+  foreign_unskilled_workers?: string | number | null;
+  foreign_total_workers?: string | number | null;
+
+  total_jobs?: string | number | null;
+
+  required_skills_ar?: string | null;
+  required_skills_en?: string | null;
+
+  notes_ar?: string | null;
+  notes_en?: string | null;
+
+  [key: string]: string | number | boolean | null | undefined;
+};
+
+/* =========================================================
+   البنية التحتية
 ========================================================= */
 
 export type InfrastructureItem = {
-data: ReferenceItem;
-type: ReferenceItem | null;
-};
+  opportunity_infrastructure_id: string | number;
+  opportunity_id: string | number;
 
-export type SiteFeatureItem = {
-data: ReferenceItem;
-feature: ReferenceItem | null;
-};
+  infrastructure_type_id: string | number;
 
-export type ApprovalItem = {
-data: ReferenceItem;
-type: ReferenceItem | null;
-issuing_entity: ReferenceItem | null;
-};
+  availability_status?: string | null;
 
-export type EntityItem = {
-data: ReferenceItem;
-entity: ReferenceItem | null;
-entity_type: ReferenceItem | null;
-relation_type: ReferenceItem | null;
-};
+  description_ar?: string | null;
+  description_en?: string | null;
 
-export type InvestorItem = {
-data: ReferenceItem;
-investor_type: ReferenceItem | null;
-entity: ReferenceItem | null;
-};
+  is_active?: boolean | string;
 
-export type ContractItem = {
-data: ReferenceItem;
-contract_type: ReferenceItem | null;
-};
+  infrastructure_type_name_ar?: string | null;
+  infrastructure_type_name_en?: string | null;
 
-export type AttachmentItem = {
-data: ReferenceItem;
-type: ReferenceItem | null;
+  infrastructure_category?: string | null;
+
+  [key: string]: string | number | boolean | null | undefined;
 };
 
 /* =========================================================
-استجابة API الكاملة
+   خصائص الموقع
+========================================================= */
+
+export type SiteFeatureItem = {
+  opportunity_site_feature_id: string | number;
+  opportunity_id: string | number;
+
+  site_feature_id: string | number;
+
+  feature_value_ar?: string | null;
+  feature_value_en?: string | null;
+
+  notes_ar?: string | null;
+  notes_en?: string | null;
+
+  is_active?: boolean | string;
+
+  feature_name_ar?: string | null;
+  feature_name_en?: string | null;
+
+  feature_description_ar?: string | null;
+  feature_description_en?: string | null;
+
+  [key: string]: string | number | boolean | null | undefined;
+};
+
+/* =========================================================
+   الموافقات
+========================================================= */
+
+export type ApprovalItem = {
+  opportunity_approval_id: string | number;
+  opportunity_id: string | number;
+
+  approval_type_id?: string | number | null;
+
+  approval_name_ar?: string | null;
+  approval_name_en?: string | null;
+
+  approval_status_ar?: string | null;
+  approval_status_en?: string | null;
+
+  issuing_entity_id?: string | number | null;
+
+  notes_ar?: string | null;
+  notes_en?: string | null;
+
+  approval_type_name_ar?: string | null;
+  approval_type_name_en?: string | null;
+
+  issuing_entity_name_ar?: string | null;
+  issuing_entity_name_en?: string | null;
+
+  [key: string]: string | number | boolean | null | undefined;
+};
+
+/* =========================================================
+   الجهات
+========================================================= */
+
+export type EntityItem = {
+  opportunity_entity_id: string | number;
+  opportunity_id: string | number;
+
+  entity_id: string | number;
+  relation_type_id?: string | number | null;
+
+  notes_ar?: string | null;
+  notes_en?: string | null;
+
+  created_at?: string | null;
+  is_active?: boolean | string;
+
+  entity_name_ar?: string | null;
+  entity_name_en?: string | null;
+
+  entity_phone?: string | null;
+  entity_email?: string | null;
+
+  entity_type_name_ar?: string | null;
+  entity_type_name_en?: string | null;
+
+  relation_type_name_ar?: string | null;
+  relation_type_name_en?: string | null;
+
+  [key: string]: string | number | boolean | null | undefined;
+};
+
+/* =========================================================
+   المستثمرون
+========================================================= */
+
+export type InvestorItem = {
+  opportunity_investor_id: string | number;
+  opportunity_id: string | number;
+
+  investor_type_id?: string | number | null;
+  entity_id?: string | number | null;
+
+  notes_ar?: string | null;
+  notes_en?: string | null;
+
+  investor_type_name_ar?: string | null;
+  investor_type_name_en?: string | null;
+
+  entity_name_ar?: string | null;
+  entity_name_en?: string | null;
+
+  [key: string]: string | number | boolean | null | undefined;
+};
+
+/* =========================================================
+   العقود
+========================================================= */
+
+export type ContractItem = {
+  opportunity_contract_id: string | number;
+  opportunity_id: string | number;
+
+  contract_type_id?: string | number | null;
+
+  notes_ar?: string | null;
+  notes_en?: string | null;
+
+  contract_type_name_ar?: string | null;
+  contract_type_name_en?: string | null;
+
+  [key: string]: string | number | boolean | null | undefined;
+};
+
+/* =========================================================
+   الوثائق
+========================================================= */
+
+export type AttachmentItem = {
+  opportunity_attachment_id: string | number;
+  opportunity_id: string | number;
+
+  attachment_type_id?: string | number | null;
+
+  file_name?: string | null;
+  file_url?: string | null;
+
+  document_status?: string | null;
+
+  uploaded_date?: string | null;
+
+  notes_ar?: string | null;
+  notes_en?: string | null;
+
+  attachment_type_name_ar?: string | null;
+  attachment_type_name_en?: string | null;
+
+  [key: string]: string | number | boolean | null | undefined;
+};
+
+/* =========================================================
+   استجابة API الكاملة
 ========================================================= */
 
 export type OpportunityApiResponse = {
-opportunity: OpportunityData;
+  opportunity: OpportunityData;
 
-references: {
-sector: ReferenceItem | null;
-sub_sector: ReferenceItem | null;
-project_type: ReferenceItem | null;
-project_scale: ReferenceItem | null;
-investor_type: ReferenceItem | null;
-contract_type: ReferenceItem | null;
-status: ReferenceItem | null;
-ownership: ReferenceItem | null;
-provider_entity: ReferenceItem | null;
-provider_entity_type: ReferenceItem | null;
-};
+  references: OpportunityReferences;
 
-financial: FinancialData | null;
+  financial: FinancialData | null;
 
-financial_reference: {
-currency: ReferenceItem | null;
-financing_model: ReferenceItem | null;
-};
+  financial_reference?: {
+    currency?: ReferenceItem | null;
+    financing_model?: ReferenceItem | null;
+  };
 
-location: ReferenceItem | null;
+  location: LocationData | null;
 
-location_reference: {
-administrative_unit: ReferenceItem | null;
-administrative_unit_type: ReferenceItem | null;
-area_unit: ReferenceItem | null;
-};
+  location_reference?: {
+    administrative_unit?: ReferenceItem | null;
+    administrative_unit_type?: ReferenceItem | null;
+    area_unit?: ReferenceItem | null;
+  };
 
-project_details: ReferenceItem | null;
+  project_details: ProjectDetailsData | null;
 
-capacity_unit: ReferenceItem | null;
+  capacity_unit?: ReferenceItem | null;
 
-employment: ReferenceItem | null;
+  employment: EmploymentData | null;
 
-infrastructure: InfrastructureItem[];
+  infrastructure: InfrastructureItem[];
 
-site_features: SiteFeatureItem[];
+  site_features: SiteFeatureItem[];
 
-approvals: ApprovalItem[];
+  approvals: ApprovalItem[];
 
-entities: EntityItem[];
+  entities: EntityItem[];
 
-investors: InvestorItem[];
+  investors: InvestorItem[];
 
-contracts: ContractItem[];
+  contracts: ContractItem[];
 
-attachments: AttachmentItem[];
+  attachments: AttachmentItem[];
 };
 
 /* =========================================================
-إعدادات API
+   إعدادات API
 ========================================================= */
 
 const API_BASE_URL = "http://127.0.0.1:8000/api";
 
 /* =========================================================
-جلب فرصة واحدة حسب الرمز
+   جلب فرصة واحدة حسب الرمز
 ========================================================= */
 
 export async function getOpportunityByCodeApi(
-code: string
+  code: string
 ): Promise<OpportunityApiResponse> {
-const response = await fetch(
-`${API_BASE_URL}/opportunities/${encodeURIComponent(code)}`
-);
+  const response = await fetch(
+    `${API_BASE_URL}/opportunities/${encodeURIComponent(code)}`
+  );
 
-if (!response.ok) {
-throw new Error(
-`Failed to fetch opportunity: ${response.status}`
-);
-}
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch opportunity: ${response.status}`
+    );
+  }
 
-const result = await response.json();
+  const result = await response.json();
 
-if (result?.detail) {
-throw new Error(result.detail);
-}
+  if (result?.detail) {
+    throw new Error(result.detail);
+  }
 
-return result as OpportunityApiResponse;
+  return result as OpportunityApiResponse;
 }
 
 /* =========================================================

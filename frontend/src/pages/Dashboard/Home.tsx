@@ -1,3 +1,6 @@
+import { Link } from "react-router";
+import { useEffect, useState } from "react";
+
 import PageMeta from "../../components/common/PageMeta";
 
 import {
@@ -15,43 +18,160 @@ import {
 
 import {
   getOpportunities,
-  getActiveOpportunities,
-  getReadyOpportunities,
-  getPendingOpportunities,
-  getClosedOpportunities,
-  getTotalInvestment,
 } from "../../services/opportunityService";
 
-import type { OpportunityStatus } from "../../types/opportunity";
+import type {
+  Opportunity,
+  OpportunityStatus,
+} from "../../types/opportunity";
 
 export default function Home() {
+  /* =========================================================
+     حالة البيانات
+  ========================================================= */
+
+  const [allOpportunities, setAllOpportunities] =
+    useState<Opportunity[]>([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
+
+  /* =========================================================
+     جلب البيانات من FastAPI
+  ========================================================= */
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadOpportunities() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const data = await getOpportunities();
+
+        if (mounted) {
+          setAllOpportunities(data);
+        }
+      } catch (err) {
+        console.error(
+          "Failed to load opportunities:",
+          err
+        );
+
+        if (mounted) {
+          setError(
+            "تعذر تحميل بيانات الفرص الاستثمارية"
+          );
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadOpportunities();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  /* =========================================================
+     حالة التحميل
+  ========================================================= */
+
+  if (loading) {
+    return (
+      <>
+        <PageMeta
+          title="لوحة التحكم | خارطة الاستثمار الذكية"
+          description="لوحة التحكم الرئيسية لمنصة خارطة الاستثمار الذكية"
+        />
+
+        <div
+          dir="rtl"
+          className="flex min-h-[400px] items-center justify-center"
+        >
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            جاري تحميل بيانات الفرص الاستثمارية...
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  /* =========================================================
+     حالة الخطأ
+  ========================================================= */
+
+  if (error) {
+    return (
+      <>
+        <PageMeta
+          title="لوحة التحكم | خارطة الاستثمار الذكية"
+          description="لوحة التحكم الرئيسية لمنصة خارطة الاستثمار الذكية"
+        />
+
+        <div
+          dir="rtl"
+          className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center text-sm text-red-700"
+        >
+          {error}
+        </div>
+      </>
+    );
+  }
+
   /* =========================================================
      البيانات الأساسية
   ========================================================= */
 
-  const allOpportunities = getOpportunities();
-
-  const totalOpportunities = allOpportunities.length;
+  const totalOpportunities =
+    allOpportunities.length;
 
   const activeOpportunities =
-    getActiveOpportunities().length;
+  allOpportunities.filter(
+    (opportunity) =>
+      opportunity.status === "فرصة استراتيجية" ||
+      opportunity.status === "فرصة جديدة" ||
+      opportunity.status === "إعادة تأهيل"
+  ).length;
 
-  const readyOpportunities =
-    getReadyOpportunities().length;
+const readyOpportunities =
+  allOpportunities.filter(
+    (opportunity) =>
+      opportunity.readiness >= 80
+  ).length;
 
-  const pendingOpportunities =
-    getPendingOpportunities().length;
+const pendingOpportunities =
+  allOpportunities.filter(
+    (opportunity) =>
+      opportunity.status === "قيد الدراسة"
+  ).length;
 
-  const closedOpportunities =
-    getClosedOpportunities().length;
+const closedOpportunities =
+  allOpportunities.filter(
+    (opportunity) =>
+      opportunity.status === "مغلقة"
+  ).length;
 
-  const totalInvestment =
-    getTotalInvestment();
+const totalInvestment =
+  allOpportunities.reduce(
+    (total, opportunity) =>
+      total + opportunity.value,
+    0
+  );
 
   const sectors = [
     ...new Set(
       allOpportunities.map(
-        (opportunity) => opportunity.sector
+        (opportunity) =>
+          opportunity.sector
       )
     ),
   ];
@@ -59,7 +179,8 @@ export default function Home() {
   const locations = [
     ...new Set(
       allOpportunities.map(
-        (opportunity) => opportunity.location
+        (opportunity) =>
+          opportunity.location
       )
     ),
   ];
@@ -68,8 +189,13 @@ export default function Home() {
      أعلى الفرص حسب القيمة
   ========================================================= */
 
-  const topOpportunities = [...allOpportunities]
-    .sort((a, b) => b.value - a.value)
+  const topOpportunities = [
+    ...allOpportunities,
+  ]
+    .sort(
+      (a, b) =>
+        b.value - a.value
+    )
     .slice(0, 4);
 
   /* =========================================================
@@ -86,10 +212,14 @@ export default function Home() {
   ========================================================= */
 
   const sectorStats =
-    getSectorStats(allOpportunities);
+    getSectorStats(
+      allOpportunities
+    );
 
   const locationStats =
-    getLocationStats(allOpportunities);
+    getLocationStats(
+      allOpportunities
+    );
 
   return (
     <>
@@ -102,15 +232,12 @@ export default function Home() {
         dir="rtl"
         className="space-y-6"
       >
-
         {/* =====================================================
             رأس الصفحة
         ====================================================== */}
 
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-
           <div>
-
             <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
               لوحة التحكم
             </h1>
@@ -118,13 +245,11 @@ export default function Home() {
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               نظرة شاملة على منظومة الفرص الاستثمارية ومؤشرات الأداء
             </p>
-
           </div>
 
           <div className="text-xs text-gray-400">
             آخر تحديث: اليوم
           </div>
-
         </div>
 
         {/* =====================================================
@@ -132,7 +257,6 @@ export default function Home() {
         ====================================================== */}
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-6">
-
           <KpiCard
             title="إجمالي الفرص"
             value={totalOpportunities.toString()}
@@ -188,7 +312,6 @@ export default function Home() {
             trend="neutral"
             icon={<LocationIcon />}
           />
-
         </div>
 
         {/* =====================================================
@@ -196,19 +319,12 @@ export default function Home() {
         ====================================================== */}
 
         <div className="grid grid-cols-12 gap-6">
-
-          {/* =========================
-              القطاعات
-          ========================== */}
+          {/* القطاعات */}
 
           <div className="col-span-12 xl:col-span-7">
-
             <div className="h-full rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-
               <div className="flex items-start justify-between">
-
                 <div>
-
                   <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
                     توزيع الفرص حسب القطاعات
                   </h2>
@@ -216,17 +332,14 @@ export default function Home() {
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                     توزيع الفرص الاستثمارية الحالية على القطاعات الاقتصادية
                   </p>
-
                 </div>
 
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-500 dark:bg-brand-500/10">
                   <PieChartIcon />
                 </div>
-
               </div>
 
               <div className="mt-7 space-y-5">
-
                 {sectorStats.map(
                   (sector) => (
                     <SectorBar
@@ -239,25 +352,16 @@ export default function Home() {
                     />
                   )
                 )}
-
               </div>
-
             </div>
-
           </div>
 
-          {/* =========================
-              حالة الفرص
-          ========================== */}
+          {/* حالة الفرص */}
 
           <div className="col-span-12 xl:col-span-5">
-
             <div className="h-full rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-
               <div className="flex items-start justify-between">
-
                 <div>
-
                   <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
                     حالة الفرص الاستثمارية
                   </h2>
@@ -265,17 +369,14 @@ export default function Home() {
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                     الحالة الحالية لمحفظة الفرص
                   </p>
-
                 </div>
 
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-500 dark:bg-brand-500/10">
                   <BoltIcon />
                 </div>
-
               </div>
 
               <div className="mt-8 space-y-6">
-
                 <StatusRow
                   label="نشطة"
                   value={
@@ -290,9 +391,7 @@ export default function Home() {
 
                 <StatusRow
                   label="جاهزة للاستثمار"
-                  value={
-                    readyOpportunities
-                  }
+                  value={readyOpportunities}
                   percentage={getPercentage(
                     readyOpportunities,
                     totalOpportunities
@@ -323,13 +422,9 @@ export default function Home() {
                   )}
                   type="closed"
                 />
-
               </div>
-
             </div>
-
           </div>
-
         </div>
 
         {/* =====================================================
@@ -337,19 +432,12 @@ export default function Home() {
         ====================================================== */}
 
         <div className="grid grid-cols-12 gap-6">
-
-          {/* =========================
-              التوزيع الجغرافي
-          ========================== */}
+          {/* التوزيع الجغرافي */}
 
           <div className="col-span-12 xl:col-span-5">
-
             <div className="h-full rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-
               <div className="flex items-start justify-between">
-
                 <div>
-
                   <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
                     التوزيع الجغرافي
                   </h2>
@@ -357,17 +445,14 @@ export default function Home() {
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                     توزيع الفرص حسب المناطق والوحدات الإدارية
                   </p>
-
                 </div>
 
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-500 dark:bg-brand-500/10">
                   <LocationIcon />
                 </div>
-
               </div>
 
               <div className="mt-7 space-y-5">
-
                 {locationStats.map(
                   (location) => (
                     <LocationRow
@@ -381,38 +466,28 @@ export default function Home() {
                     />
                   )
                 )}
-
               </div>
 
-              <button
-                type="button"
+              <Link
+                to="/map"
                 className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-white/[0.03]"
               >
-
                 <MapIcon />
-
+              
                 <span>
                   استعراض الخارطة الاستثمارية
                 </span>
-
-              </button>
+              </Link>
 
             </div>
-
           </div>
 
-          {/* =========================
-              أعلى الفرص
-          ========================== */}
+          {/* أعلى الفرص */}
 
           <div className="col-span-12 xl:col-span-7">
-
             <div className="h-full rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-
               <div className="flex items-start justify-between">
-
                 <div>
-
                   <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
                     أبرز الفرص الاستثمارية
                   </h2>
@@ -420,17 +495,14 @@ export default function Home() {
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                     الفرص الأعلى من حيث القيمة الاستثمارية التقديرية
                   </p>
-
                 </div>
 
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-500 dark:bg-brand-500/10">
                   <DollarLineIcon />
                 </div>
-
               </div>
 
               <div className="mt-6 space-y-3">
-
                 {topOpportunities.map(
                   (opportunity) => (
                     <TopOpportunity
@@ -450,13 +522,9 @@ export default function Home() {
                     />
                   )
                 )}
-
               </div>
-
             </div>
-
           </div>
-
         </div>
 
         {/* =====================================================
@@ -464,41 +532,43 @@ export default function Home() {
         ====================================================== */}
 
         <div>
-
           <h2 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">
             الوصول السريع
           </h2>
-
+        
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-
-            <QuickAction
-              icon={
-                <ShootingStarIcon />
-              }
-              title="الفرص الاستثمارية"
-              description="استعراض وإدارة الفرص"
-            />
-
-            <QuickAction
-              icon={<MapIcon />}
-              title="خارطة الاستثمار"
-              description="استعراض التوزيع الجغرافي"
-            />
-
-            <QuickAction
-              icon={<BoltIcon />}
-              title="التحليل والذكاء الاصطناعي"
-              description="تحليل وتقييم الفرص"
-            />
-
-            <QuickAction
-              icon={<DocsIcon />}
-              title="التقارير والمؤشرات"
-              description="عرض التقارير والتحليلات"
-            />
-
+            <Link to="/opportunities">
+              <QuickAction
+                icon={<ShootingStarIcon />}
+                title="الفرص الاستثمارية"
+                description="استعراض وإدارة الفرص"
+              />
+            </Link>
+        
+            <Link to="/map">
+              <QuickAction
+                icon={<MapIcon />}
+                title="خارطة الاستثمار"
+                description="استعراض التوزيع الجغرافي"
+              />
+            </Link>
+        
+            <Link to="/ai/opportunity-analysis">
+              <QuickAction
+                icon={<BoltIcon />}
+                title="التحليل والذكاء الاصطناعي"
+                description="تحليل وتقييم الفرص"
+              />
+            </Link>
+        
+            <Link to="/reports">
+              <QuickAction
+                icon={<DocsIcon />}
+                title="التقارير والمؤشرات"
+                description="عرض التقارير والتحليلات"
+              />
+            </Link>
           </div>
-
         </div>
 
         {/* =====================================================
@@ -506,11 +576,8 @@ export default function Home() {
         ====================================================== */}
 
         <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-
           <div className="flex flex-col gap-3 border-b border-gray-200 px-6 py-5 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800">
-
             <div>
-
               <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
                 أحدث الفرص الاستثمارية
               </h2>
@@ -518,7 +585,6 @@ export default function Home() {
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 آخر الفرص المضافة إلى المنصة
               </p>
-
             </div>
 
             <button
@@ -527,17 +593,12 @@ export default function Home() {
             >
               عرض جميع الفرص
             </button>
-
           </div>
 
           <div className="overflow-x-auto">
-
             <table className="w-full min-w-[700px] text-right">
-
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
-
                 <tr>
-
                   <th className="px-6 py-4 text-sm font-medium text-gray-500">
                     الرمز
                   </th>
@@ -557,13 +618,10 @@ export default function Home() {
                   <th className="px-6 py-4 text-sm font-medium text-gray-500">
                     القيمة التقديرية
                   </th>
-
                 </tr>
-
               </thead>
 
               <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-
                 {latestOpportunities.map(
                   (opportunity) => (
                     <OpportunityRow
@@ -586,15 +644,10 @@ export default function Home() {
                     />
                   )
                 )}
-
               </tbody>
-
             </table>
-
           </div>
-
         </div>
-
       </div>
     </>
   );
@@ -631,9 +684,7 @@ function formatInvestmentValue(
 }
 
 function getSectorStats(
-  items: ReturnType<
-    typeof getOpportunities
-  >
+  items: Opportunity[]
 ) {
   const counts: Record<
     string,
@@ -667,9 +718,7 @@ function getSectorStats(
 }
 
 function getLocationStats(
-  items: ReturnType<
-    typeof getOpportunities
-  >
+  items: Opportunity[]
 ) {
   const counts: Record<
     string,
@@ -725,9 +774,7 @@ function KpiCard({
 }) {
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
-
       <div className="flex items-start justify-between">
-
         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-500 dark:bg-brand-500/10">
           {icon}
         </div>
@@ -751,11 +798,9 @@ function KpiCard({
             {percentage}
           </span>
         )}
-
       </div>
 
       <div className="mt-5">
-
         <p className="text-sm text-gray-500 dark:text-gray-400">
           {title}
         </p>
@@ -763,9 +808,7 @@ function KpiCard({
         <h2 className="mt-2 text-2xl font-bold text-gray-800 dark:text-white">
           {value}
         </h2>
-
       </div>
-
     </div>
   );
 }
@@ -792,9 +835,7 @@ function SectorBar({
 
   return (
     <div>
-
       <div className="mb-2 flex items-center justify-between">
-
         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
           {name}
         </span>
@@ -802,20 +843,16 @@ function SectorBar({
         <span className="text-sm text-gray-500">
           {value} فرصة
         </span>
-
       </div>
 
       <div className="h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-
         <div
           className="h-full rounded-full bg-brand-500 transition-all duration-500"
           style={{
             width: `${percentage}%`,
           }}
         />
-
       </div>
-
     </div>
   );
 }
@@ -850,9 +887,7 @@ function StatusRow({
 
   return (
     <div className="flex items-center justify-between">
-
       <div className="flex items-center gap-3">
-
         <span
           className={`h-3 w-3 rounded-full ${dotClass}`}
         />
@@ -860,11 +895,9 @@ function StatusRow({
         <span className="text-sm text-gray-700 dark:text-gray-300">
           {label}
         </span>
-
       </div>
 
       <div className="flex items-center gap-3">
-
         <span className="font-semibold text-gray-800 dark:text-white">
           {value}
         </span>
@@ -872,9 +905,7 @@ function StatusRow({
         <span className="text-sm text-gray-500">
           {percentage}
         </span>
-
       </div>
-
     </div>
   );
 }
@@ -894,9 +925,7 @@ function LocationRow({
 }) {
   return (
     <div className="flex items-center justify-between">
-
       <div className="flex items-center gap-3">
-
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-brand-500 dark:bg-white/[0.03]">
           <LocationIcon />
         </div>
@@ -904,11 +933,9 @@ function LocationRow({
         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
           {name}
         </span>
-
       </div>
 
       <div className="flex items-center gap-3">
-
         <span className="font-semibold text-gray-800 dark:text-white">
           {value}
         </span>
@@ -916,9 +943,7 @@ function LocationRow({
         <span className="text-xs text-gray-400">
           {percentage}
         </span>
-
       </div>
-
     </div>
   );
 }
@@ -940,17 +965,13 @@ function TopOpportunity({
 }) {
   return (
     <div className="flex items-center justify-between rounded-xl border border-gray-100 p-4 transition hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-white/[0.02]">
-
       <div className="flex min-w-0 items-center gap-3">
-
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-500 dark:bg-brand-500/10">
           <ShootingStarIcon />
         </div>
 
         <div className="min-w-0">
-
           <div className="flex items-center gap-2">
-
             <span className="text-xs font-medium text-brand-500">
               {code}
             </span>
@@ -958,21 +979,17 @@ function TopOpportunity({
             <span className="truncate text-sm font-semibold text-gray-800 dark:text-white">
               {name}
             </span>
-
           </div>
 
           <p className="mt-1 text-xs text-gray-500">
             {sector}
           </p>
-
         </div>
-
       </div>
 
       <span className="shrink-0 text-sm font-bold text-gray-800 dark:text-white">
         {value}
       </span>
-
     </div>
   );
 }
@@ -995,13 +1012,11 @@ function QuickAction({
       type="button"
       className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 text-right transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-theme-sm dark:border-gray-800 dark:bg-white/[0.03] dark:hover:border-brand-500/30"
     >
-
       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white dark:bg-brand-500/10">
         {icon}
       </div>
 
       <div className="min-w-0">
-
         <h3 className="text-sm font-semibold text-gray-800 dark:text-white">
           {title}
         </h3>
@@ -1009,9 +1024,7 @@ function QuickAction({
         <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
           {description}
         </p>
-
       </div>
-
     </button>
   );
 }
@@ -1033,19 +1046,21 @@ function OpportunityRow({
   status: OpportunityStatus;
   value: string;
 }) {
-  const statusClass =
-    status === "جاهزة"
+    const statusClass =
+    status === "فرصة استراتيجية"
+      ? "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400"
+      : status === "فرصة جديدة"
       ? "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400"
-      : status ===
-        "قيد الدراسة"
+      : status === "إعادة تأهيل"
       ? "bg-yellow-50 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400"
+      : status === "قيد الدراسة"
+      ? "bg-orange-50 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400"
       : status === "مغلقة"
       ? "bg-gray-50 text-gray-700 dark:bg-gray-500/10 dark:text-gray-400"
-      : "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400";
+      : "bg-gray-50 text-gray-700 dark:bg-gray-500/10 dark:text-gray-400";
 
   return (
     <tr className="transition hover:bg-gray-50 dark:hover:bg-white/[0.02]">
-
       <td className="px-6 py-4 text-sm font-semibold text-brand-600">
         {code}
       </td>
@@ -1059,19 +1074,16 @@ function OpportunityRow({
       </td>
 
       <td className="px-6 py-4">
-
         <span
           className={`rounded-full px-3 py-1 text-xs font-medium ${statusClass}`}
         >
           {status}
         </span>
-
       </td>
 
       <td className="px-6 py-4 text-sm font-semibold text-gray-800 dark:text-white">
         {value}
       </td>
-
     </tr>
   );
 }

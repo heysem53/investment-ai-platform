@@ -32,6 +32,25 @@ import InvestmentMap from "./pages/InvestmentMap/InvestmentMap";
 
 import ApiTest from "./pages/ApiTest";
 
+import Sectors from "./pages/Sectors/Sectors";
+
+import Locations from "./pages/Locations/Locations";
+
+import Investors from "./pages/Investors/Investors";
+
+import FinancialData from "./pages/FinancialData/FinancialData";
+
+import Contracts from "./pages/Contracts/Contracts";
+
+import Attachments from "./pages/Attachments/Attachments";
+
+import AIAnalysis from "./pages/AIAnalysis/AIAnalysis";
+
+import Reports from "./pages/Reports/Reports.tsx";
+
+import TablesData from "./pages/TablesData/TablesData";
+
+
 export default function App() {
   return (
     <Router>
@@ -49,6 +68,11 @@ export default function App() {
           <Route
             path="/map"
             element={<InvestmentMap />}
+          />
+
+          <Route
+            path="/sectors"
+            element={<Sectors />}
           />
 
           <Route
@@ -78,7 +102,12 @@ export default function App() {
 
           <Route
             path="/investors"
-            element={<Blank />}
+            element={<Investors />}
+          />
+
+          <Route
+            path="/financial-data"
+            element={<FinancialData />}
           />
 
           <Route
@@ -88,15 +117,31 @@ export default function App() {
 
           <Route
             path="/locations"
-            element={<Blank />}
+            element={<Locations />}
           />
 
           <Route
             path="/reports"
-            element={<Blank />}
+            element={<Reports />}
+          />
+
+          <Route
+            path="/contracts"
+            element={<Contracts />}
+          />
+
+          <Route
+            path="/attachments"
+            element={<Attachments />}
           />
 
           {/* الذكاء الاصطناعي */}
+          
+          <Route
+            path="/ai-analysis"
+            element={<AIAnalysis />}
+          />
+
           <Route
             path="/ai/opportunity-analysis"
             element={<Blank />}
@@ -110,6 +155,11 @@ export default function App() {
           <Route
             path="/ai/recommendations"
             element={<Blank />}
+          />
+
+          <Route
+            path="/tables"
+            element={<TablesData />}
           />
 
           {/* الإعدادات */}

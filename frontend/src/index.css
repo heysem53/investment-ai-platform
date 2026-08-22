@@ -790,3 +790,5 @@ span.flatpickr-weekday,
 .simplebar-scrollbar.simplebar-visible:before {
   @apply opacity-100;
 }
+
+@import "leaflet/dist/leaflet.css";

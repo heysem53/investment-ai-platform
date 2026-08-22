@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useParams } from "react-router";
 import PageMeta from "../../components/common/PageMeta";
 
@@ -7,10 +7,272 @@ import {
   type OpportunityApiResponse,
 } from "../../services/opportunityApi";
 
+/* =========================================================
+   Types
+========================================================= */
+
+type OpportunityDetailsData = {
+  opportunity: {
+    opportunity_id: number;
+    opportunity_code: string;
+    name_ar: string;
+    name_en?: string | null;
+    sector_id?: number | null;
+    sub_sector_id?: number | null;
+    location_id?: number | null;
+    ownership_id?: number | null;
+    project_type_id?: number | null;
+    investor_type_id?: number | null;
+    contract_type_id?: number | null;
+    provider_entity_id?: number | null;
+    project_scale_id?: number | null;
+    status_id?: number | null;
+    created_at?: string | null;
+    updated_at?: string | null;
+    is_active?: boolean | null;
+  };
+
+  references: {
+    sector_id?: number | null;
+    sector_name_ar?: string | null;
+    sector_name_en?: string | null;
+
+    sub_sector_id?: number | null;
+    sub_sector_name_ar?: string | null;
+    sub_sector_name_en?: string | null;
+
+    project_type_id?: number | null;
+    project_type_name_ar?: string | null;
+    project_type_name_en?: string | null;
+
+    project_scale_id?: number | null;
+    project_scale_name_ar?: string | null;
+    project_scale_name_en?: string | null;
+
+    investor_type_id?: number | null;
+    investor_type_name_ar?: string | null;
+    investor_type_name_en?: string | null;
+
+    contract_type_id?: number | null;
+    contract_type_name_ar?: string | null;
+    contract_type_name_en?: string | null;
+
+    status_id?: number | null;
+    status_name_ar?: string | null;
+    status_name_en?: string | null;
+
+    ownership_id?: number | null;
+    ownership_name_ar?: string | null;
+    ownership_name_en?: string | null;
+
+    provider_entity_id?: number | null;
+    provider_entity_name_ar?: string | null;
+    provider_entity_name_en?: string | null;
+
+    entity_type_id?: number | null;
+    provider_entity_type_name_ar?: string | null;
+    provider_entity_type_name_en?: string | null;
+  };
+
+  financial?: {
+    financial_id?: number | null;
+    opportunity_id?: number | null;
+    estimated_cost?: number | null;
+    currency_id?: number | null;
+    estimation_source_ar?: string | null;
+    estimation_source_en?: string | null;
+    annual_investment_return?: number | null;
+    investment_period_years?: number | null;
+    construction_period_years?: number | null;
+    grace_period_years?: number | null;
+    financing_model_id?: number | null;
+    expected_return_rate?: number | null;
+    notes_ar?: string | null;
+    notes_en?: string | null;
+    currency_code?: string | null;
+    currency_name_ar?: string | null;
+    currency_name_en?: string | null;
+    currency_symbol?: string | null;
+    financing_model_name_ar?: string | null;
+    financing_model_name_en?: string | null;
+  } | null;
+
+  location?: {
+    location_id?: number | null;
+    opportunity_id?: number | null;
+    description_ar?: string | null;
+    description_en?: string | null;
+    administrative_unit_id?: number | null;
+    ownership_id?: number | null;
+    property_numbers?: string | null;
+    area_value?: number | null;
+    area_unit_id?: number | null;
+    expandable?: boolean | string | null;
+    expansion_area_value?: number | null;
+    latitude?: number | null;
+    longitude?: number | null;
+    map_url?: string | null;
+    notes_ar?: string | null;
+    notes_en?: string | null;
+    area_unit_name_ar?: string | null;
+    area_unit_name_en?: string | null;
+    area_unit_symbol?: string | null;
+    administrative_unit_name_ar?: string | null;
+    administrative_unit_name_en?: string | null;
+    administrative_unit_type_name_ar?: string | null;
+    administrative_unit_type_name_en?: string | null;
+  } | null;
+
+  project_details?: {
+    project_detail_id?: number | null;
+    opportunity_id?: number | null;
+    description_ar?: string | null;
+    description_en?: string | null;
+    main_product_ar?: string | null;
+    main_product_en?: string | null;
+    main_product_specifications_ar?: string | null;
+    main_product_specifications_en?: string | null;
+    secondary_products_ar?: string | null;
+    secondary_products_en?: string | null;
+    production_capacity?: number | null;
+    capacity_unit_id?: number | null;
+    target_market_ar?: string | null;
+    target_market_en?: string | null;
+    economic_social_justification_ar?: string | null;
+    economic_social_justification_en?: string | null;
+    capacity_unit_name_ar?: string | null;
+    capacity_unit_name_en?: string | null;
+    capacity_unit_symbol?: string | null;
+  } | null;
+
+  employment?: {
+    employment_id?: number | null;
+    opportunity_id?: number | null;
+    local_specialized_workers?: number | null;
+    local_unskilled_workers?: number | null;
+    local_total_workers?: number | null;
+    foreign_specialized_workers?: number | null;
+    foreign_unskilled_workers?: number | null;
+    foreign_total_workers?: number | null;
+    total_jobs?: number | null;
+    required_skills_ar?: string | null;
+    required_skills_en?: string | null;
+    notes_ar?: string | null;
+    notes_en?: string | null;
+  } | null;
+
+  infrastructure: Array<{
+    opportunity_infrastructure_id?: number | null;
+    opportunity_id?: number | null;
+    infrastructure_type_id?: number | null;
+    availability_status?: string | null;
+    description_ar?: string | null;
+    description_en?: string | null;
+    is_active?: boolean | null;
+    infrastructure_type_name_ar?: string | null;
+    infrastructure_type_name_en?: string | null;
+    infrastructure_category?: string | null;
+  }>;
+
+  site_features: Array<{
+    opportunity_site_feature_id?: number | null;
+    opportunity_id?: number | null;
+    site_feature_id?: number | null;
+    feature_value_ar?: string | null;
+    feature_value_en?: string | null;
+    notes_ar?: string | null;
+    notes_en?: string | null;
+    is_active?: boolean | null;
+    feature_name_ar?: string | null;
+    feature_name_en?: string | null;
+    feature_description_ar?: string | null;
+    feature_description_en?: string | null;
+  }>;
+
+  approvals: Array<{
+    opportunity_approval_id?: number | null;
+    opportunity_id?: number | null;
+    approval_type_id?: number | null;
+    approval_name_ar?: string | null;
+    approval_name_en?: string | null;
+    approval_status_ar?: string | null;
+    approval_status_en?: string | null;
+    issuing_entity_id?: number | null;
+    notes_ar?: string | null;
+    notes_en?: string | null;
+    approval_type_name_ar?: string | null;
+    approval_type_name_en?: string | null;
+    issuing_entity_name_ar?: string | null;
+    issuing_entity_name_en?: string | null;
+  }>;
+
+  entities: Array<{
+    opportunity_entity_id?: number | null;
+    opportunity_id?: number | null;
+    entity_id?: number | null;
+    relation_type_id?: number | null;
+    notes_ar?: string | null;
+    notes_en?: string | null;
+    created_at?: string | null;
+    is_active?: boolean | null;
+    entity_name_ar?: string | null;
+    entity_name_en?: string | null;
+    entity_phone?: string | null;
+    entity_email?: string | null;
+    entity_type_name_ar?: string | null;
+    entity_type_name_en?: string | null;
+    relation_type_name_ar?: string | null;
+    relation_type_name_en?: string | null;
+  }>;
+
+  investors: Array<{
+    opportunity_investor_id?: number | null;
+    opportunity_id?: number | null;
+    investor_type_id?: number | null;
+    entity_id?: number | null;
+    notes_ar?: string | null;
+    notes_en?: string | null;
+    investor_type_name_ar?: string | null;
+    investor_type_name_en?: string | null;
+    entity_name_ar?: string | null;
+    entity_name_en?: string | null;
+  }>;
+
+  contracts: Array<{
+    opportunity_contract_id?: number | null;
+    opportunity_id?: number | null;
+    contract_type_id?: number | null;
+    notes_ar?: string | null;
+    notes_en?: string | null;
+    contract_type_name_ar?: string | null;
+    contract_type_name_en?: string | null;
+  }>;
+
+  attachments: Array<{
+    opportunity_attachment_id?: number | null;
+    opportunity_id?: number | null;
+    attachment_type_id?: number | null;
+    file_name?: string | null;
+    file_url?: string | null;
+    document_status?: string | null;
+    uploaded_date?: string | null;
+    notes_ar?: string | null;
+    notes_en?: string | null;
+    attachment_type_name_ar?: string | null;
+    attachment_type_name_en?: string | null;
+  }>;
+};
+
+/* =========================================================
+   Main Component
+========================================================= */
+
 export default function OpportunityDetails() {
   const { code } = useParams();
 
-  const [data, setData] = useState<OpportunityApiResponse | null>(null);
+  const [data, setData] =
+    useState<OpportunityDetailsData | null>(null);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,11 +282,16 @@ export default function OpportunityDetails() {
     }
 
     getOpportunityByCodeApi(code)
-      .then((result) => {
-        setData(result);
+      .then((result: OpportunityApiResponse) => {
+        setData(
+          result as unknown as OpportunityDetailsData
+        );
       })
       .catch((error) => {
-        console.error("Failed to load opportunity:", error);
+        console.error(
+          "Failed to load opportunity:",
+          error
+        );
         setData(null);
       })
       .finally(() => {
@@ -38,7 +305,9 @@ export default function OpportunityDetails() {
         dir="rtl"
         className="flex min-h-[400px] items-center justify-center"
       >
-        <p className="text-sm text-gray-500">جاري تحميل بيانات الفرصة...</p>
+        <p className="text-sm text-gray-500">
+          جاري تحميل بيانات الفرصة...
+        </p>
       </div>
     );
   }
@@ -76,69 +345,62 @@ export default function OpportunityDetails() {
   }
 
   const opportunity = data.opportunity;
-  const financial = data.financial;
-
   const references = data.references;
+  const financial = data.financial;
   const location = data.location;
-  const locationReference = data.location_reference;
   const projectDetails = data.project_details;
-  const capacityUnit = data.capacity_unit;
   const employment = data.employment;
-
-  /* =========================================================
-     الحالة
-  ========================================================= */
-
-  const statusName = String(
-    references.status?.name_ar ?? "غير محدد"
-  );
 
   /* =========================================================
      البيانات المرجعية
   ========================================================= */
 
+  const statusName = String(
+    references.status_name_ar ?? "غير محدد"
+  );
+
   const sectorName = String(
-    references.sector?.name_ar ?? "غير محدد"
+    references.sector_name_ar ?? "غير محدد"
   );
 
   const subSectorName = String(
-    references.sub_sector?.name_ar ?? "غير محدد"
+    references.sub_sector_name_ar ?? "غير محدد"
   );
 
   const projectTypeName = String(
-    references.project_type?.name_ar ?? "غير محدد"
+    references.project_type_name_ar ?? "غير محدد"
   );
 
   const projectScaleName = String(
-    references.project_scale?.name_ar ?? "غير محدد"
+    references.project_scale_name_ar ?? "غير محدد"
   );
 
   const investorTypeName = String(
-    references.investor_type?.name_ar ?? "غير محدد"
+    references.investor_type_name_ar ?? "غير محدد"
   );
 
   const contractTypeName = String(
-    references.contract_type?.name_ar ?? "غير محدد"
+    references.contract_type_name_ar ?? "غير محدد"
   );
 
   const ownershipName = String(
-    references.ownership?.name_ar ?? "غير محدد"
+    references.ownership_name_ar ?? "غير محدد"
   );
 
   const providerEntityName = String(
-    references.provider_entity?.name_ar ?? "غير محدد"
+    references.provider_entity_name_ar ?? "غير محدد"
   );
 
   const financingModelName = String(
-    data.financial_reference?.financing_model?.name_ar ?? "غير محدد"
+    financial?.financing_model_name_ar ?? "غير محدد"
   );
 
   const currencyName = String(
-    data.financial_reference?.currency?.name_ar ?? "غير محدد"
+    financial?.currency_name_ar ?? "غير محدد"
   );
 
   const currencyCode = String(
-    data.financial_reference?.currency?.code ?? ""
+    financial?.currency_code ?? ""
   );
 
   /* =========================================================
@@ -150,17 +412,21 @@ export default function OpportunityDetails() {
   );
 
   const administrativeUnitName = String(
-    locationReference?.administrative_unit?.name_ar ?? "غير محدد"
+    location?.administrative_unit_name_ar ??
+      "غير محدد"
   );
 
   const administrativeUnitTypeName = String(
-    locationReference?.administrative_unit_type?.name_ar ?? "غير محدد"
+    location?.administrative_unit_type_name_ar ??
+      "غير محدد"
   );
 
-  const areaValue = Number(location?.area_value ?? 0);
+  const areaValue = Number(
+    location?.area_value ?? 0
+  );
 
   const areaUnitName = String(
-    locationReference?.area_unit?.name_ar ?? "غير محدد"
+    location?.area_unit_name_ar ?? "غير محدد"
   );
 
   const propertyNumbers = String(
@@ -168,16 +434,30 @@ export default function OpportunityDetails() {
   );
 
   const expandable =
-    String(location?.expandable ?? "").toUpperCase() === "TRUE";
+    location?.expandable === true ||
+    String(location?.expandable ?? "")
+      .toUpperCase()
+      .trim() === "TRUE";
 
   const expansionAreaValue = Number(
     location?.expansion_area_value ?? 0
   );
 
-  const latitude = String(location?.latitude ?? "");
-  const longitude = String(location?.longitude ?? "");
-  const mapUrl = String(location?.map_url ?? "");
-  const locationNotes = String(location?.notes_ar ?? "");
+  const latitude = String(
+    location?.latitude ?? ""
+  );
+
+  const longitude = String(
+    location?.longitude ?? ""
+  );
+
+  const mapUrl = String(
+    location?.map_url ?? ""
+  );
+
+  const locationNotes = String(
+    location?.notes_ar ?? ""
+  );
 
   /* =========================================================
      تفاصيل المشروع
@@ -194,11 +474,13 @@ export default function OpportunityDetails() {
   );
 
   const mainProductSpecifications = String(
-    projectDetails?.main_product_specifications_ar ?? "غير محدد"
+    projectDetails?.main_product_specifications_ar ??
+      "غير محدد"
   );
 
   const secondaryProducts = String(
-    projectDetails?.secondary_products_ar ?? "غير محدد"
+    projectDetails?.secondary_products_ar ??
+      "غير محدد"
   );
 
   const productionCapacity = Number(
@@ -206,26 +488,32 @@ export default function OpportunityDetails() {
   );
 
   const capacityUnitName = String(
-    capacityUnit?.name_ar ?? "غير محدد"
+    projectDetails?.capacity_unit_name_ar ??
+      "غير محدد"
   );
 
   const capacityUnitSymbol = String(
-    capacityUnit?.symbol ?? ""
+    projectDetails?.capacity_unit_symbol ?? ""
   );
 
   const targetMarket = String(
-    projectDetails?.target_market_ar ?? "غير محدد"
+    projectDetails?.target_market_ar ??
+      "غير محدد"
   );
 
-  const economicSocialJustification = String(
-    projectDetails?.economic_social_justification_ar ?? "غير محدد"
-  );
+  const economicSocialJustification =
+    String(
+      projectDetails?.economic_social_justification_ar ??
+        "غير محدد"
+    );
 
   /* =========================================================
      العمالة
   ========================================================= */
 
-  const totalJobs = Number(employment?.total_jobs ?? 0);
+  const totalJobs = Number(
+    employment?.total_jobs ?? 0
+  );
 
   const localTotalWorkers = Number(
     employment?.local_total_workers ?? 0
@@ -251,7 +539,8 @@ export default function OpportunityDetails() {
     financial?.annual_investment_return ?? 0
   );
 
-  const investmentValueMillion = estimatedCost / 1000000;
+  const investmentValueMillion =
+    estimatedCost / 1000000;
 
   const expectedReturnRate = Number(
     financial?.expected_return_rate ?? 0
@@ -269,245 +558,272 @@ export default function OpportunityDetails() {
     financial?.grace_period_years ?? 0
   );
 
- /* =========================================================
-   الجاهزية الاستثمارية
-   مؤشر محسوب من اكتمال وجودة بيانات الفرصة
-========================================================= */
+  /* =========================================================
+     الجاهزية الاستثمارية
+  ========================================================= */
 
-const readiness = (() => {
-  let score = 0;
+  const readiness = (() => {
+    let score = 0;
 
-  /* ---------------------------------------------------------
-     1. المعلومات الأساسية — 10%
-  --------------------------------------------------------- */
+    /* ---------------------------------------------------------
+       1. البيانات الأساسية — 10%
+    --------------------------------------------------------- */
 
-  const basicFields = [
-    opportunity.opportunity_code,
-    opportunity.name_ar,
-    opportunity.sector_id,
-    opportunity.sub_sector_id,
-    opportunity.project_type_id,
-    opportunity.investor_type_id,
-    opportunity.contract_type_id,
-    opportunity.provider_entity_id,
-    opportunity.ownership_id,
-  ];
+    const basicFields = [
+      opportunity.opportunity_code,
+      opportunity.name_ar,
+      opportunity.sector_id,
+      opportunity.sub_sector_id,
+      opportunity.project_type_id,
+      opportunity.investor_type_id,
+      opportunity.contract_type_id,
+      opportunity.provider_entity_id,
+      opportunity.ownership_id,
+    ];
 
-  const basicCompleted = basicFields.filter(
-    (value) =>
-      value !== null &&
-      value !== undefined &&
-      String(value).trim() !== ""
-  ).length;
+    const completedBasic = basicFields.filter(
+      (value) =>
+        value !== null &&
+        value !== undefined &&
+        String(value).trim() !== ""
+    ).length;
 
-  score += (basicCompleted / basicFields.length) * 10;
+    score +=
+      (completedBasic / basicFields.length) * 10;
 
+    /* ---------------------------------------------------------
+       2. الموقع — 15%
+    --------------------------------------------------------- */
 
-  /* ---------------------------------------------------------
-     2. الموقع والعقار — 15%
-  --------------------------------------------------------- */
+    if (location) {
+      let locationScore = 0;
 
-  if (location) {
-    let locationScore = 0;
+      if (location.description_ar)
+        locationScore += 3;
 
-    if (location.description_ar) locationScore += 3;
-    if (location.administrative_unit_id) locationScore += 2;
-    if (location.area_value) locationScore += 2;
-    if (location.area_unit_id) locationScore += 1;
-    if (location.property_numbers) locationScore += 1;
-    if (location.latitude && location.longitude)
-      locationScore += 3;
-    if (location.map_url) locationScore += 1;
-    if (location.expandable !== null && location.expandable !== undefined)
-      locationScore += 1;
+      if (location.administrative_unit_id)
+        locationScore += 2;
+
+      if (location.area_value)
+        locationScore += 2;
+
+      if (location.area_unit_id)
+        locationScore += 1;
+
+      if (
+        location.latitude !== null &&
+        location.latitude !== undefined &&
+        location.longitude !== null &&
+        location.longitude !== undefined
+      ) {
+        locationScore += 3;
+      }
+
+      if (location.map_url)
+        locationScore += 1;
+
+      if (
+        location.expandable !== null &&
+        location.expandable !== undefined
+      ) {
+        locationScore += 1;
+      }
+
+      if (
+        expandable &&
+        location.expansion_area_value
+      ) {
+        locationScore += 2;
+      }
+
+      score += Math.min(
+        locationScore,
+        15
+      );
+    }
+
+    /* ---------------------------------------------------------
+       3. البيانات المالية — 20%
+    --------------------------------------------------------- */
+
+    if (financial) {
+      let financialScore = 0;
+
+      if (financial.estimated_cost)
+        financialScore += 5;
+
+      if (financial.currency_id)
+        financialScore += 2;
+
+      if (financial.estimation_source_ar)
+        financialScore += 2;
+
+      if (financial.annual_investment_return)
+        financialScore += 2;
+
+      if (financial.investment_period_years)
+        financialScore += 3;
+
+      if (financial.construction_period_years)
+        financialScore += 2;
+
+      if (financial.financing_model_id)
+        financialScore += 2;
+
+      if (financial.expected_return_rate)
+        financialScore += 2;
+
+      score += Math.min(
+        financialScore,
+        20
+      );
+    }
+
+    /* ---------------------------------------------------------
+       4. تفاصيل المشروع — 15%
+    --------------------------------------------------------- */
+
+    if (projectDetails) {
+      let projectScore = 0;
+
+      if (projectDetails.description_ar)
+        projectScore += 4;
+
+      if (projectDetails.main_product_ar)
+        projectScore += 2;
+
+      if (
+        projectDetails.main_product_specifications_ar
+      )
+        projectScore += 2;
+
+      if (
+        projectDetails.production_capacity
+      )
+        projectScore += 2;
+
+      if (
+        projectDetails.capacity_unit_id
+      )
+        projectScore += 1;
+
+      if (
+        projectDetails.target_market_ar
+      )
+        projectScore += 2;
+
+      if (
+        projectDetails.economic_social_justification_ar
+      )
+        projectScore += 2;
+
+      score += Math.min(
+        projectScore,
+        15
+      );
+    }
+
+    /* ---------------------------------------------------------
+       5. البنية التحتية — 10%
+    --------------------------------------------------------- */
+
     if (
-      location.expandable === "TRUE" &&
-      location.expansion_area_value
-    )
-      locationScore += 1;
+      Array.isArray(data.infrastructure) &&
+      data.infrastructure.length > 0
+    ) {
+      const available =
+        data.infrastructure.filter((item) => {
+          const status = String(
+            item.availability_status ?? ""
+          )
+            .toLowerCase()
+            .trim();
 
-    score += Math.min(locationScore, 15);
-  }
+          return (
+            status === "available" ||
+            status === "متوفر" ||
+            status === "متاحة" ||
+            status === "متاح"
+          );
+        }).length;
 
+      score +=
+        (available /
+          data.infrastructure.length) *
+        10;
+    }
 
-  /* ---------------------------------------------------------
-     3. البيانات المالية — 20%
-  --------------------------------------------------------- */
+    /* ---------------------------------------------------------
+       6. الموافقات — 15%
+    --------------------------------------------------------- */
 
-  if (financial) {
-    let financialScore = 0;
+    if (
+      Array.isArray(data.approvals) &&
+      data.approvals.length > 0
+    ) {
+      const approved =
+        data.approvals.filter((item) => {
+          const status = String(
+            item.approval_status_ar ??
+              item.approval_status_en ??
+              ""
+          )
+            .toLowerCase()
+            .trim();
 
-    if (financial.estimated_cost) financialScore += 5;
-    if (financial.currency_id) financialScore += 2;
-    if (financial.estimation_source_ar) financialScore += 2;
-    if (financial.annual_investment_return) financialScore += 2;
-    if (financial.investment_period_years) financialScore += 2;
-    if (financial.construction_period_years) financialScore += 2;
-    if (financial.grace_period_years) financialScore += 1;
-    if (financial.financing_model_id) financialScore += 2;
-    if (financial.expected_return_rate) financialScore += 2;
+          return (
+            status.includes("مكتمل") ||
+            status.includes("موافق") ||
+            status.includes("معتمد") ||
+            status.includes("approved") ||
+            status.includes("complete")
+          );
+        }).length;
 
-    score += Math.min(financialScore, 20);
-  }
+      score +=
+        (approved /
+          data.approvals.length) *
+        15;
+    }
 
+    /* ---------------------------------------------------------
+       7. الوثائق — 5%
+    --------------------------------------------------------- */
 
-  /* ---------------------------------------------------------
-     4. تفاصيل المشروع — 15%
-  --------------------------------------------------------- */
+    if (
+      Array.isArray(data.attachments) &&
+      data.attachments.length > 0
+    ) {
+      score += 5;
+    }
 
-  if (projectDetails) {
-    let projectScore = 0;
+    /* ---------------------------------------------------------
+       8. العمالة والتشغيل — 5%
+    --------------------------------------------------------- */
 
-    if (projectDetails.description_ar)
-      projectScore += 4;
+    if (employment?.total_jobs) {
+      score += 5;
+    }
 
-    if (projectDetails.main_product_ar)
-      projectScore += 2;
+    /* ---------------------------------------------------------
+       9. خصائص الموقع — 5%
+    --------------------------------------------------------- */
 
-    if (projectDetails.main_product_specifications_ar)
-      projectScore += 2;
+    if (
+      Array.isArray(data.site_features) &&
+      data.site_features.length > 0
+    ) {
+      score += 5;
+    }
 
-    if (projectDetails.secondary_products_ar)
-      projectScore += 1;
+    return Math.round(
+      Math.min(
+        Math.max(score, 0),
+        100
+      )
+    );
+  })();
 
-    if (projectDetails.production_capacity)
-      projectScore += 2;
-
-    if (projectDetails.capacity_unit_id)
-      projectScore += 1;
-
-    if (projectDetails.target_market_ar)
-      projectScore += 1;
-
-    if (projectDetails.economic_social_justification_ar)
-      projectScore += 2;
-
-    score += Math.min(projectScore, 15);
-  }
-
-
-  /* ---------------------------------------------------------
-     5. البنية التحتية — 10%
-  --------------------------------------------------------- */
-
-  if (
-    Array.isArray(data.infrastructure) &&
-    data.infrastructure.length > 0
-  ) {
-    const totalInfrastructure =
-      data.infrastructure.length;
-
-    const availableInfrastructure =
-      data.infrastructure.filter((item) => {
-        const statusValue = String(
-          item.data.availability_status ?? ""
-        )
-          .toLowerCase()
-          .trim();
-
-        return (
-          statusValue === "available" ||
-          statusValue === "متوفر"
-        );
-      }).length;
-
-    const infrastructureRatio =
-      availableInfrastructure / totalInfrastructure;
-
-    score += infrastructureRatio * 10;
-  }
-
-
-  /* ---------------------------------------------------------
-     6. الموافقات — 15%
-  --------------------------------------------------------- */
-
-  if (
-    Array.isArray(data.approvals) &&
-    data.approvals.length > 0
-  ) {
-    const totalApprovals = data.approvals.length;
-
-    const completedApprovals =
-      data.approvals.filter((item) => {
-        const statusValue = String(
-          item.data.approval_status_ar ?? ""
-        ).trim();
-
-        return (
-          statusValue.includes("مكتمل") ||
-          statusValue.includes("موافق") ||
-          statusValue.includes("معتمد") ||
-          statusValue.toLowerCase() === "approved"
-        );
-      }).length;
-
-    score +=
-      (completedApprovals / totalApprovals) * 15;
-  }
-
-
-  /* ---------------------------------------------------------
-     7. الوثائق — 10%
-  --------------------------------------------------------- */
-
-  if (
-    Array.isArray(data.attachments) &&
-    data.attachments.length > 0
-  ) {
-    const totalAttachments =
-      data.attachments.length;
-
-    const availableAttachments =
-      data.attachments.filter((item) => {
-        const statusValue = String(
-          item.data.document_status ?? ""
-        )
-          .toLowerCase()
-          .trim();
-
-        return (
-          statusValue === "available" ||
-          statusValue === "متوفر"
-        );
-      }).length;
-
-    score +=
-      (availableAttachments / totalAttachments) * 10;
-  }
-
-
-  /* ---------------------------------------------------------
-     8. العمالة والتشغيل — 5%
-  --------------------------------------------------------- */
-
-  if (employment) {
-    let employmentScore = 0;
-
-    if (employment.total_jobs)
-      employmentScore += 2;
-
-    if (employment.local_total_workers)
-      employmentScore += 1;
-
-    if (employment.foreign_total_workers)
-      employmentScore += 1;
-
-    if (employment.required_skills_ar)
-      employmentScore += 1;
-
-    score += Math.min(employmentScore, 5);
-  }
-
-
-  /* ---------------------------------------------------------
-     النتيجة النهائية
-  --------------------------------------------------------- */
-
-  return Math.round(
-    Math.min(Math.max(score, 0), 100)
-  );
-})();
   /* =========================================================
      البنية التحتية
   ========================================================= */
@@ -515,27 +831,37 @@ const readiness = (() => {
   const infrastructureStatus = (
     value: unknown
   ): "متوفر" | "متوفر جزئيًا" | "غير متوفر" => {
-    const statusValue = String(value ?? "")
+    const statusValue = String(
+      value ?? ""
+    )
       .toLowerCase()
       .trim();
 
     if (
       statusValue === "available" ||
-      statusValue === "متوفر"
+      statusValue === "متوفر" ||
+      statusValue === "متاح" ||
+      statusValue === "متاحة"
     ) {
       return "متوفر";
     }
 
     if (
-      statusValue === "partially_available" ||
+      statusValue ===
+        "partially_available" ||
       statusValue === "partial" ||
-      statusValue === "متوفر جزئيًا"
+      statusValue === "متوفر جزئيًا" ||
+      statusValue === "متاح جزئيًا"
     ) {
       return "متوفر جزئيًا";
     }
 
     return "غير متوفر";
   };
+
+  /* =========================================================
+     Render
+  ========================================================= */
 
   return (
     <>
@@ -544,8 +870,10 @@ const readiness = (() => {
         description={`الملف الاستثماري للفرصة ${opportunity.opportunity_code}`}
       />
 
-      <div dir="rtl" className="space-y-6">
-
+      <div
+        dir="rtl"
+        className="space-y-6"
+      >
         {/* رأس الصفحة */}
 
         <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
@@ -561,7 +889,9 @@ const readiness = (() => {
 
                 <span>/</span>
 
-                <span>{opportunity.opportunity_code}</span>
+                <span>
+                  {opportunity.opportunity_code}
+                </span>
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
@@ -569,7 +899,9 @@ const readiness = (() => {
                   {opportunity.name_ar}
                 </h1>
 
-                <StatusBadge status={statusName} />
+                <StatusBadge
+                  status={statusName}
+                />
               </div>
 
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -627,7 +959,9 @@ const readiness = (() => {
           </div>
 
           <div className="col-span-12 xl:col-span-4">
-            <ReadinessCard readiness={readiness} />
+            <ReadinessCard
+              readiness={readiness}
+            />
           </div>
         </div>
 
@@ -690,17 +1024,23 @@ const readiness = (() => {
             <div className="space-y-4">
               <DataRow
                 label="الوحدة الإدارية"
-                value={administrativeUnitName}
+                value={
+                  administrativeUnitName
+                }
               />
 
               <DataRow
                 label="المستوى الإداري"
-                value={administrativeUnitTypeName}
+                value={
+                  administrativeUnitTypeName
+                }
               />
 
               <DataRow
                 label="وصف الموقع"
-                value={locationDescription}
+                value={
+                  locationDescription
+                }
               />
 
               <DataRow
@@ -715,7 +1055,11 @@ const readiness = (() => {
 
               <DataRow
                 label="قابلية التوسع"
-                value={expandable ? "نعم" : "لا"}
+                value={
+                  expandable
+                    ? "نعم"
+                    : "لا"
+                }
               />
 
               {expandable && (
@@ -727,29 +1071,36 @@ const readiness = (() => {
 
               <DataRow
                 label="الجهة المقدمة"
-                value={providerEntityName}
+                value={
+                  providerEntityName
+                }
               />
 
               <DataRow
                 label="نوع المستثمر"
-                value={investorTypeName}
+                value={
+                  investorTypeName
+                }
               />
             </div>
 
             <div className="space-y-4">
               <div className="flex min-h-[220px] items-center justify-center rounded-xl bg-gray-100 text-sm text-gray-500 dark:bg-white/[0.04] dark:text-gray-400">
-                {latitude && longitude ? (
+                {latitude &&
+                longitude ? (
                   <div className="text-center">
                     <p className="font-medium text-gray-700 dark:text-gray-300">
                       الموقع الجغرافي
                     </p>
 
                     <p className="mt-2">
-                      خط العرض: {latitude}
+                      خط العرض:{" "}
+                      {latitude}
                     </p>
 
                     <p>
-                      خط الطول: {longitude}
+                      خط الطول:{" "}
+                      {longitude}
                     </p>
 
                     {mapUrl && (
@@ -797,7 +1148,9 @@ const readiness = (() => {
 
             <DataItem
               label="مواصفات المنتج الرئيسي"
-              value={mainProductSpecifications}
+              value={
+                mainProductSpecifications
+              }
             />
 
             <DataItem
@@ -817,7 +1170,9 @@ const readiness = (() => {
 
             <DataItem
               label="المبرر الاقتصادي والاجتماعي"
-              value={economicSocialJustification}
+              value={
+                economicSocialJustification
+              }
             />
           </div>
         </SectionCard>
@@ -863,13 +1218,17 @@ const readiness = (() => {
               <div className="mt-5 space-y-4">
                 <DataRow
                   label="نموذج التمويل"
-                  value={financingModelName}
+                  value={
+                    financingModelName
+                  }
                 />
 
                 <DataRow
                   label="العملة"
                   value={`${currencyName} ${
-                    currencyCode ? `(${currencyCode})` : ""
+                    currencyCode
+                      ? `(${currencyCode})`
+                      : ""
                   }`}
                 />
 
@@ -938,7 +1297,10 @@ const readiness = (() => {
 
             <FinancialCard
               title="العملة"
-              value={currencyCode || currencyName}
+              value={
+                currencyCode ||
+                currencyName
+              }
               subtitle="Currency"
             />
           </div>
@@ -1006,27 +1368,30 @@ const readiness = (() => {
           title="البنية التحتية"
           description="حالة البنية التحتية والخدمات المتوفرة في موقع الفرصة"
         >
-          {data.infrastructure.length > 0 ? (
+          {data.infrastructure.length >
+          0 ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {data.infrastructure.map((item, index) => (
-                <InfrastructureCard
-                  key={String(
-                    item.data.opportunity_infrastructure_id ??
-                      index
-                  )}
-                  title={String(
-                    item.type?.name_ar ?? "بنية تحتية"
-                  )}
-                  status={infrastructureStatus(
-                    item.data.availability_status
-                  )}
-                  description={String(
-                    item.data.description_ar ??
-                      item.type?.description_ar ??
-                      "لا يوجد وصف"
-                  )}
-                />
-              ))}
+              {data.infrastructure.map(
+                (item, index) => (
+                  <InfrastructureCard
+                    key={String(
+                      item.opportunity_infrastructure_id ??
+                        index
+                    )}
+                    title={String(
+                      item.infrastructure_type_name_ar ??
+                        "بنية تحتية"
+                    )}
+                    status={infrastructureStatus(
+                      item.availability_status
+                    )}
+                    description={String(
+                      item.description_ar ??
+                        "لا يوجد وصف"
+                    )}
+                  />
+                )
+              )}
             </div>
           ) : (
             <EmptyState text="لا توجد بيانات للبنية التحتية لهذه الفرصة." />
@@ -1035,33 +1400,38 @@ const readiness = (() => {
 
         {/* خصائص الموقع */}
 
-        {data.site_features.length > 0 && (
+        {data.site_features.length >
+          0 && (
           <SectionCard
             title="خصائص الموقع"
             description="المزايا والخصائص الاستثمارية المرتبطة بموقع المشروع"
           >
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {data.site_features.map((item, index) => (
-                <div
-                  key={String(
-                    item.data.opportunity_site_feature_id ??
-                      index
-                  )}
-                  className="rounded-xl border border-gray-100 p-5 dark:border-gray-800"
-                >
-                  <p className="text-sm font-semibold text-gray-800 dark:text-white">
-                    {String(
-                      item.feature?.name_ar ?? "خاصية الموقع"
+              {data.site_features.map(
+                (item, index) => (
+                  <div
+                    key={String(
+                      item.opportunity_site_feature_id ??
+                        index
                     )}
-                  </p>
+                    className="rounded-xl border border-gray-100 p-5 dark:border-gray-800"
+                  >
+                    <p className="text-sm font-semibold text-gray-800 dark:text-white">
+                      {String(
+                        item.feature_name_ar ??
+                          "خاصية الموقع"
+                      )}
+                    </p>
 
-                  <p className="mt-3 text-sm leading-6 text-gray-500 dark:text-gray-400">
-                    {String(
-                      item.data.feature_value_ar ?? "غير محدد"
-                    )}
-                  </p>
-                </div>
-              ))}
+                    <p className="mt-3 text-sm leading-6 text-gray-500 dark:text-gray-400">
+                      {String(
+                        item.feature_value_ar ??
+                          "غير محدد"
+                      )}
+                    </p>
+                  </div>
+                )
+              )}
             </div>
           </SectionCard>
         )}
@@ -1082,24 +1452,29 @@ const readiness = (() => {
 
                 <EntityRow
                   name="الجهة المقدمة"
-                  value={providerEntityName}
+                  value={
+                    providerEntityName
+                  }
                 />
 
-                {data.entities.map((item, index) => (
-                  <EntityRow
-                    key={String(
-                      item.data.opportunity_entity_id ??
-                        index
-                    )}
-                    name={String(
-                      item.relation_type?.name_ar ??
-                        "جهة مرتبطة"
-                    )}
-                    value={String(
-                      item.entity?.name_ar ?? "غير محدد"
-                    )}
-                  />
-                ))}
+                {data.entities.map(
+                  (item, index) => (
+                    <EntityRow
+                      key={String(
+                        item.opportunity_entity_id ??
+                          index
+                      )}
+                      name={String(
+                        item.relation_type_name_ar ??
+                          "جهة مرتبطة"
+                      )}
+                      value={String(
+                        item.entity_name_ar ??
+                          "غير محدد"
+                      )}
+                    />
+                  )
+                )}
               </div>
             </SectionCard>
           </div>
@@ -1109,25 +1484,28 @@ const readiness = (() => {
               title="الموافقات"
               description="حالة الموافقات والإجراءات المرتبطة بالمشروع"
             >
-              {data.approvals.length > 0 ? (
+              {data.approvals.length >
+              0 ? (
                 <div className="space-y-3">
-                  {data.approvals.map((item, index) => (
-                    <ApprovalRow
-                      key={String(
-                        item.data.opportunity_approval_id ??
-                          index
-                      )}
-                      name={String(
-                        item.data.approval_name_ar ??
-                          item.type?.name_ar ??
-                          "موافقة"
-                      )}
-                      status={String(
-                        item.data.approval_status_ar ??
-                          "غير محدد"
-                      )}
-                    />
-                  ))}
+                  {data.approvals.map(
+                    (item, index) => (
+                      <ApprovalRow
+                        key={String(
+                          item.opportunity_approval_id ??
+                            index
+                        )}
+                        name={String(
+                          item.approval_name_ar ??
+                            item.approval_type_name_ar ??
+                            "موافقة"
+                        )}
+                        status={String(
+                          item.approval_status_ar ??
+                            "غير محدد"
+                        )}
+                      />
+                    )
+                  )}
                 </div>
               ) : (
                 <EmptyState text="لا توجد بيانات للموافقات لهذه الفرصة." />
@@ -1144,23 +1522,27 @@ const readiness = (() => {
               title="المستثمرون"
               description="المستثمرون أو الجهات الاستثمارية المرتبطة بالفرصة"
             >
-              {data.investors.length > 0 ? (
+              {data.investors.length >
+              0 ? (
                 <div className="space-y-3">
-                  {data.investors.map((item, index) => (
-                    <EntityRow
-                      key={String(
-                        item.data.opportunity_investor_id ??
-                          index
-                      )}
-                      name={String(
-                        item.investor_type?.name_ar ??
-                          "نوع المستثمر"
-                      )}
-                      value={String(
-                        item.entity?.name_ar ?? "غير محدد"
-                      )}
-                    />
-                  ))}
+                  {data.investors.map(
+                    (item, index) => (
+                      <EntityRow
+                        key={String(
+                          item.opportunity_investor_id ??
+                            index
+                        )}
+                        name={String(
+                          item.investor_type_name_ar ??
+                            "نوع المستثمر"
+                        )}
+                        value={String(
+                          item.entity_name_ar ??
+                            "غير محدد"
+                        )}
+                      />
+                    )
+                  )}
                 </div>
               ) : (
                 <EmptyState text="لا توجد بيانات مستثمرين مرتبطة حاليًا." />
@@ -1173,32 +1555,36 @@ const readiness = (() => {
               title="العقود"
               description="أنواع العقود المرتبطة بالفرصة الاستثمارية"
             >
-              {data.contracts.length > 0 ? (
+              {data.contracts.length >
+              0 ? (
                 <div className="space-y-3">
-                  {data.contracts.map((item, index) => (
-                    <div
-                      key={String(
-                        item.data.opportunity_contract_id ??
-                          index
-                      )}
-                      className="rounded-xl border border-gray-100 p-4 dark:border-gray-800"
-                    >
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-sm font-semibold text-gray-800 dark:text-white">
-                          {String(
-                            item.contract_type?.name_ar ??
-                              contractTypeName
-                          )}
-                        </span>
-                      </div>
-
-                      <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
-                        {String(
-                          item.data.notes_ar ?? "لا توجد ملاحظات"
+                  {data.contracts.map(
+                    (item, index) => (
+                      <div
+                        key={String(
+                          item.opportunity_contract_id ??
+                            index
                         )}
-                      </p>
-                    </div>
-                  ))}
+                        className="rounded-xl border border-gray-100 p-4 dark:border-gray-800"
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          <span className="text-sm font-semibold text-gray-800 dark:text-white">
+                            {String(
+                              item.contract_type_name_ar ??
+                                contractTypeName
+                            )}
+                          </span>
+                        </div>
+
+                        <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
+                          {String(
+                            item.notes_ar ??
+                              "لا توجد ملاحظات"
+                          )}
+                        </p>
+                      </div>
+                    )
+                  )}
                 </div>
               ) : (
                 <EmptyState text="لا توجد بيانات للعقود لهذه الفرصة." />
@@ -1213,25 +1599,32 @@ const readiness = (() => {
           title="الوثائق والعقود"
           description="المستندات والملفات المرتبطة بالفرصة الاستثمارية"
         >
-          {data.attachments.length > 0 ? (
+          {data.attachments.length >
+          0 ? (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              {data.attachments.map((item, index) => (
-                <DocumentCard
-                  key={String(
-                    item.data.opportunity_attachment_id ??
-                      index
-                  )}
-                  title={String(
-                    item.data.file_name ??
-                      item.type?.name_ar ??
-                      "وثيقة"
-                  )}
-                  type={getFileType(
-                    String(item.data.file_name ?? "")
-                  )}
-                  url={String(item.data.file_url ?? "")}
-                />
-              ))}
+              {data.attachments.map(
+                (item, index) => (
+                  <DocumentCard
+                    key={String(
+                      item.opportunity_attachment_id ??
+                        index
+                    )}
+                    title={String(
+                      item.file_name ??
+                        item.attachment_type_name_ar ??
+                        "وثيقة"
+                    )}
+                    type={getFileType(
+                      String(
+                        item.file_name ?? ""
+                      )
+                    )}
+                    url={String(
+                      item.file_url ?? ""
+                    )}
+                  />
+                )
+              )}
             </div>
           ) : (
             <EmptyState text="لا توجد وثائق مرفقة بهذه الفرصة." />
@@ -1300,7 +1693,10 @@ function StatusBadge({
 }: {
   status: string;
 }) {
-  const statusStyles: Record<string, string> = {
+  const statusStyles: Record<
+    string,
+    string
+  > = {
     "فرصة استراتيجية":
       "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
 
@@ -1331,7 +1727,7 @@ function SectionCard({
 }: {
   title: string;
   description: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
@@ -1395,14 +1791,21 @@ function ReadinessCard({
 }: {
   readiness: number;
 }) {
+  const level =
+    readiness >= 80
+      ? "جاهزية مرتفعة"
+      : readiness >= 50
+      ? "جاهزية متوسطة"
+      : "تحتاج استكمال البيانات";
+
   return (
     <div className="h-full rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
       <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-        جاهزية الفرصة للاستثمار
+        مؤشر جاهزية الفرصة
       </h2>
 
       <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-        مؤشر الجاهزية الاستثماري
+        يعتمد على اكتمال البيانات الاستثمارية المتوفرة
       </p>
 
       <div className="mt-7 flex items-end justify-between">
@@ -1410,22 +1813,32 @@ function ReadinessCard({
           {readiness}%
         </span>
 
-        <span className="text-sm text-gray-500 dark:text-gray-400">
-          جاهزية
+        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+          {level}
         </span>
       </div>
 
       <div className="mt-4 h-3 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
         <div
           className="h-full rounded-full bg-brand-500 transition-all"
-          style={{ width: `${readiness}%` }}
+          style={{
+            width: `${readiness}%`,
+          }}
         />
       </div>
 
-      <div className="mt-5 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-        <span>منخفضة</span>
-        <span>متوسطة</span>
-        <span>مرتفعة</span>
+      <div className="mt-5 flex justify-between text-xs text-gray-500 dark:text-gray-400">
+        <span>
+          منخفضة
+        </span>
+
+        <span>
+          متوسطة
+        </span>
+
+        <span>
+          مرتفعة
+        </span>
       </div>
     </div>
   );
@@ -1463,7 +1876,10 @@ function InfrastructureCard({
   description,
 }: {
   title: string;
-  status: "متوفر" | "متوفر جزئيًا" | "غير متوفر";
+  status:
+    | "متوفر"
+    | "متوفر جزئيًا"
+    | "غير متوفر";
   description: string;
 }) {
   const statusStyles: Record<
@@ -1592,8 +2008,11 @@ function EmptyState({
   );
 }
 
-function getFileType(fileName: string) {
-  const extension = fileName.split(".").pop();
+function getFileType(
+  fileName: string
+) {
+  const extension =
+    fileName.split(".").pop();
 
   if (!extension) {
     return "ملف";

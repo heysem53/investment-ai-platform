@@ -1,19 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import PageMeta from "../../components/common/PageMeta";
-import type { OpportunityStatus } from "../../types/opportunity";
+import type {
+  Opportunity,
+  OpportunityStatus,
+} from "../../types/opportunity";
 
-type Opportunity = {
-  code: string;
-  name: string;
-  sector: string;
-  location: string;
-  status: OpportunityStatus;
-  value: number;
-};
-
-const API_BASE_URL = "http://127.0.0.1:8000/api";
-
+import {
+  getOpportunities,
+} from "../../services/opportunityService";
 /* =========================================================
    القطاعات
 ========================================================= */
@@ -76,17 +71,7 @@ export default function Opportunities() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(
-          `${API_BASE_URL}/opportunities`
-        );
-
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch opportunities: ${response.status}`
-          );
-        }
-
-        const data = await response.json();
+        const data = await getOpportunities();
 
         /*
          * بعض الـAPIs تعيد:
@@ -103,59 +88,12 @@ export default function Opportunities() {
          * }
          */
 
-        const rawData = Array.isArray(data)
-          ? data
-          : data.opportunities;
-
-        if (!Array.isArray(rawData)) {
-          throw new Error(
-            "Invalid opportunities response format"
-          );
-        }
 
         /* =================================================
            تحويل البيانات
         ================================================= */
 
-        const mapped: Opportunity[] = rawData.map(
-          (item: any) => ({
-            code:
-              item.code ??
-              item.opportunity_code ??
-              "",
-
-            name:
-              item.name ??
-              item.name_ar ??
-              item.name_en ??
-              "فرصة استثمارية",
-
-            sector:
-              item.sector ??
-              item.sector_name ??
-              item.references?.sector?.name_ar ??
-              "غير محدد",
-
-            location:
-              item.location ??
-              item.location_name ??
-              item.references?.location?.description_ar ??
-              "غير محدد",
-
-            status:
-              item.status ??
-              item.status_name ??
-              item.references?.status?.name_ar ??
-              "مغلقة",
-
-            value:
-              Number(item.value) ||
-              Number(item.estimated_cost) / 1_000_000 ||
-              0,
-          })
-        );
-
-        setOpportunities(mapped);
+        setOpportunities(data);
       } catch (err) {
         console.error(
           "Failed to load opportunities:",
