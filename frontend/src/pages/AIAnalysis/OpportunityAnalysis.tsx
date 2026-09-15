@@ -29,12 +29,14 @@ export default function OpportunityAnalysis() {
   useEffect(() => {
     if (!code) {
       setLoading(false);
+      setError("رمز الفرصة غير موجود.");
       return;
     }
 
     getOpportunityByCodeApi(code)
       .then((result) => {
         setOpportunity(result);
+        setError(null);
       })
       .catch((err) => {
         console.error(
@@ -43,6 +45,12 @@ export default function OpportunityAnalysis() {
         );
 
         setOpportunity(null);
+
+        setError(
+          err instanceof Error
+            ? err.message
+            : "تعذر تحميل بيانات الفرصة."
+        );
       })
       .finally(() => {
         setLoading(false);
@@ -126,7 +134,8 @@ export default function OpportunityAnalysis() {
           </h1>
 
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            لم يتم العثور على بيانات الفرصة المطلوبة للتحليل.
+            {error ??
+              "لم يتم العثور على بيانات الفرصة المطلوبة للتحليل."}
           </p>
 
           <Link
@@ -341,18 +350,32 @@ export default function OpportunityAnalysis() {
                   نتيجة التحليل
                 </h3>
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   <ResultCard
                     title="درجة الاستثمار"
-                    value={`${analysis.investment_score}`}
+                    value={formatScore(
+                      analysis.investment_score
+                    )}
                     suffix="/ 100"
                   />
 
                   <ResultCard
                     title="التصنيف الاستثماري"
+                    value={formatInvestmentGrade(
+                      analysis.investment_grade
+                    )}
+                  />
+
+                  <ResultCard
+                    title="الجاهزية الاستثمارية"
                     value={
-                      analysis.investment_grade ??
-                      "غير محدد"
+                      analysis.estimated_readiness !==
+                        undefined &&
+                      analysis.estimated_readiness !== null
+                        ? `${formatScore(
+                            analysis.estimated_readiness
+                          )}%`
+                        : "غير محدد"
                     }
                   />
 
@@ -371,26 +394,33 @@ export default function OpportunityAnalysis() {
                     <h3 className="mb-4 text-base font-semibold text-gray-800 dark:text-white">
                       تفصيل درجة الاستثمار
                     </h3>
-
+                
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                       {Object.entries(
                         analysis.score_breakdown
-                      ).map(
-                        ([key, value]) => (
-                          <div
-                            key={key}
-                            className="rounded-lg bg-gray-50 p-4 dark:bg-white/[0.03]"
-                          >
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              {formatLabel(key)}
+                      ).map(([key, value]) => (
+                        <div
+                          key={key}
+                          className="rounded-lg bg-gray-50 p-4 dark:bg-white/[0.03]"
+                        >
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {formatLabel(key)}
+                          </p>
+                
+                          <p className="mt-2 text-lg font-bold text-gray-800 dark:text-white">
+                            {formatScoreValue(value)}
+                            <span className="mr-1 text-xs font-normal text-gray-500 dark:text-gray-400">
+                              / 100
+                            </span>
+                          </p>
+                
+                          {key === "risk_score" && (
+                            <p className="mt-2 text-xs leading-5 text-gray-500 dark:text-gray-400">
+                              كلما ارتفعت الدرجة كان مستوى المخاطر أكثر ملاءمة للاستثمار.
                             </p>
-
-                            <p className="mt-2 text-lg font-bold text-gray-800 dark:text-white">
-                              {String(value)}
-                            </p>
-                          </div>
-                        )
-                      )}
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -556,25 +586,93 @@ function AnalysisList({
   );
 }
 
-function formatLabel(key: string) {
-  const labels: Record<string, string> = {
-    financial: "التقييم المالي",
-    readiness: "جاهزية الاستثمار",
-    risk: "المخاطر",
-    market: "السوق",
-    infrastructure: "البنية التحتية",
-    location: "الموقع",
-    employment: "العمالة",
-    project: "المشروع",
+/* =========================================================
+   Helpers
+========================================================= */
+
+/**
+ * تنسيق الدرجات الرقمية بشكل ثابت.
+ * مثال: 80.45 بدل 80.450000
+ */
+function formatScore(
+  value: number | string
+): string {
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return String(value);
+  }
+
+  return numericValue.toFixed(2);
+}
+
+/**
+ * تنسيق القيم الموجودة داخل تفصيل الدرجات.
+ */
+function formatScoreValue(
+  value: number | string | null
+): string {
+  if (value === null || value === undefined) {
+    return "غير محدد";
+  }
+
+  if (
+    typeof value === "number" ||
+    !Number.isNaN(Number(value))
+  ) {
+    return formatScore(Number(value));
+  }
+
+  return String(value);
+}
+
+/**
+ * ترجمة التصنيف الاستثماري القادم من الـ API.
+ */
+function formatInvestmentGrade(
+  grade?: string | null
+): string {
+  if (!grade) {
+    return "غير محدد";
+  }
+
+  const normalizedGrade =
+    grade.trim().toLowerCase();
+
+  const grades: Record<string, string> = {
+    excellent: "ممتاز",
+    "very good": "جيد جدًا",
+    good: "جيد",
+    moderate: "متوسط",
+    weak: "ضعيف",
+    poor: "ضعيف جدًا",
   };
 
   return (
-    labels[key] ??
-    key
-      .replaceAll("_", " ")
-      .replace(
-        /\b\w/g,
-        (char) => char.toUpperCase()
-      )
+    grades[normalizedGrade] ??
+    grade
   );
+}
+
+function formatLabel(key: string) {
+  const labels: Record<string, string> = {
+    market_score: "السوق",
+    financial_score: "التقييم المالي",
+    location_score: "الموقع",
+    infrastructure_score: "البنية التحتية",
+    readiness_score: "جاهزية الاستثمار",
+    employment_score: "العمالة",
+    risk_score: "المخاطر",
+
+    market: "السوق",
+    financial: "التقييم المالي",
+    location: "الموقع",
+    infrastructure: "البنية التحتية",
+    readiness: "جاهزية الاستثمار",
+    employment: "العمالة",
+    risk: "المخاطر",
+    project: "المشروع",
+  };
+
+  return labels[key] ?? key;
 }

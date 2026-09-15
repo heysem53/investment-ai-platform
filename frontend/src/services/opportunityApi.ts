@@ -448,6 +448,12 @@ export type OpportunityApiResponse = {
   contracts: ContractItem[];
 
   attachments: AttachmentItem[];
+
+  /* =======================================================
+     مؤشر الجاهزية الموحد القادم من Backend
+  ======================================================= */
+
+  readiness?: number | null;
 };
 
 /* =========================================================
@@ -544,24 +550,30 @@ export type AIScoreBreakdown = {
 
 export type AIAnalysisResult = {
   opportunity_id: string | number;
-
   investment_score: number;
-
   investment_grade: string;
 
   score_breakdown?: AIScoreBreakdown | null;
 
   strengths?: string[];
-
   risks?: string[];
-
   recommendations?: string[];
 
   financial_analysis?: Record<string, unknown> | null;
-
   readiness_analysis?: Record<string, unknown> | null;
-
   risk_analysis?: Record<string, unknown> | null;
+
+  estimated_readiness?: number | null;
+
+  data_completeness?: number | null;
+  analysis_confidence?: number | null;
+
+  gaps?: string[];
+  verification_items?: string[];
+
+  suitable_investors?: string[];
+
+  summary?: string;
 
   [key: string]: unknown;
 };

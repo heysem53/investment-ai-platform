@@ -25,6 +25,9 @@ import Contracts from "./pages/Contracts/Contracts";
 import Attachments from "./pages/Attachments/Attachments";
 import Reports from "./pages/Reports/Reports";
 import TablesData from "./pages/TablesData/TablesData";
+import Entities from "./pages/Entities/Entities";
+import ReadyOpportunities from "./pages/Opportunities/ReadyOpportunities";
+import NewOpportunity from "./pages/Opportunities/NewOpportunity";
 
 // AI
 import OpportunityAnalysis from "./pages/AIAnalysis/OpportunityAnalysis";
@@ -101,12 +104,12 @@ export default function App() {
           {/* Opportunity Management */}
           <Route
             path="/opportunities/ready"
-            element={<Blank />}
+            element={<ReadyOpportunities />}
           />
 
           <Route
             path="/opportunities/new"
-            element={<Blank />}
+            element={<NewOpportunity />}
           />
 
           {/* =================================================
@@ -132,7 +135,7 @@ export default function App() {
 
           <Route
             path="/entities"
-            element={<Blank />}
+            element={<Entities />}
           />
 
           <Route
@@ -177,6 +180,11 @@ export default function App() {
               <Route
                 path="/ai/recommendations"
                 element={<Blank />}
+              />
+
+              <Route
+                path="/ai-analysis"
+                element={<OpportunityAnalysis />}
               />
 
           {/* =================================================

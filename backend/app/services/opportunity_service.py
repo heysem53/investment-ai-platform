@@ -1,4 +1,5 @@
 from ..database import engine
+from ..ai.analyzer import analyze_readiness
 from sqlalchemy import text
 
 
@@ -29,7 +30,8 @@ def fetch_one(query: str, params: dict | None = None):
 
         return dict(row._mapping)
 
-        # =========================================================
+
+# =========================================================
 # Opportunity By Code
 # =========================================================
 def get_opportunity_by_code(
@@ -47,11 +49,17 @@ def get_opportunity_by_code(
             "code": code
         },
     )
+
     if not opportunity:
         return None
+
     opportunity_id = opportunity[
         "opportunity_id"
     ]
+
+    # =========================================================
+    # References
+    # =========================================================
     references = fetch_one(
         """
         SELECT
@@ -112,6 +120,10 @@ def get_opportunity_by_code(
             "id": opportunity_id
         },
     )
+
+    # =========================================================
+    # Financial
+    # =========================================================
     financial = fetch_one(
         """
         SELECT
@@ -134,6 +146,10 @@ def get_opportunity_by_code(
             "id": opportunity_id
         },
     )
+
+    # =========================================================
+    # Location
+    # =========================================================
     location = fetch_one(
         """
         SELECT
@@ -161,6 +177,10 @@ def get_opportunity_by_code(
             "id": opportunity_id
         },
     )
+
+    # =========================================================
+    # Project Details
+    # =========================================================
     project_details = fetch_one(
         """
         SELECT
@@ -179,6 +199,10 @@ def get_opportunity_by_code(
             "id": opportunity_id
         },
     )
+
+    # =========================================================
+    # Employment
+    # =========================================================
     employment = fetch_one(
         """
         SELECT *
@@ -190,6 +214,10 @@ def get_opportunity_by_code(
             "id": opportunity_id
         },
     )
+
+    # =========================================================
+    # Infrastructure
+    # =========================================================
     infrastructure = fetch_all(
         """
         SELECT
@@ -208,6 +236,10 @@ def get_opportunity_by_code(
             "id": opportunity_id
         },
     )
+
+    # =========================================================
+    # Site Features
+    # =========================================================
     site_features = fetch_all(
         """
         SELECT
@@ -227,6 +259,10 @@ def get_opportunity_by_code(
             "id": opportunity_id
         },
     )
+
+    # =========================================================
+    # Approvals
+    # =========================================================
     approvals = fetch_all(
         """
         SELECT
@@ -249,6 +285,10 @@ def get_opportunity_by_code(
             "id": opportunity_id
         },
     )
+
+    # =========================================================
+    # Entities
+    # =========================================================
     entities = fetch_all(
         """
         SELECT
@@ -277,6 +317,10 @@ def get_opportunity_by_code(
             "id": opportunity_id
         },
     )
+
+    # =========================================================
+    # Investors
+    # =========================================================
     investors = fetch_all(
         """
         SELECT
@@ -299,6 +343,10 @@ def get_opportunity_by_code(
             "id": opportunity_id
         },
     )
+
+    # =========================================================
+    # Contracts
+    # =========================================================
     contracts = fetch_all(
         """
         SELECT
@@ -316,6 +364,10 @@ def get_opportunity_by_code(
             "id": opportunity_id
         },
     )
+
+    # =========================================================
+    # Attachments
+    # =========================================================
     attachments = fetch_all(
         """
         SELECT
@@ -333,6 +385,35 @@ def get_opportunity_by_code(
             "id": opportunity_id
         },
     )
+
+    # =========================================================
+    # Unified Investment Readiness
+    #
+    # Uses the exact same readiness engine used by AI analysis.
+    # This prevents OpportunityDetails from calculating a
+    # different readiness percentage.
+    # =========================================================
+    readiness = analyze_readiness(
+        {
+            "opportunity": opportunity,
+            "references": references,
+            "financial": financial,
+            "location": location,
+            "project_details": project_details,
+            "employment": employment,
+            "infrastructure": infrastructure,
+            "site_features": site_features,
+            "approvals": approvals,
+            "entities": entities,
+            "investors": investors,
+            "contracts": contracts,
+            "attachments": attachments,
+        }
+    )
+
+    # =========================================================
+    # Final Response
+    # =========================================================
     return {
         "opportunity":
             opportunity,
@@ -360,4 +441,8 @@ def get_opportunity_by_code(
             contracts,
         "attachments":
             attachments,
+
+        # Unified readiness from AI engine
+        "readiness":
+            readiness,
     }

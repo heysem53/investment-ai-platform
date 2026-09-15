@@ -6,8 +6,16 @@ layer(base);
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  /* =========================================================
+     FONT
+  ========================================================= */
+
   --font-*: initial;
   --font-outfit: Outfit, sans-serif;
+
+  /* =========================================================
+     BREAKPOINTS
+  ========================================================= */
 
   --breakpoint-*: initial;
   --breakpoint-2xsm: 375px;
@@ -19,40 +27,98 @@ layer(base);
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1536px;
 
+  /* =========================================================
+     TYPOGRAPHY
+  ========================================================= */
+
   --text-title-2xl: 72px;
   --text-title-2xl--line-height: 90px;
+
   --text-title-xl: 60px;
   --text-title-xl--line-height: 72px;
+
   --text-title-lg: 48px;
   --text-title-lg--line-height: 60px;
+
   --text-title-md: 36px;
   --text-title-md--line-height: 44px;
+
   --text-title-sm: 30px;
   --text-title-sm--line-height: 38px;
+
   --text-theme-xl: 20px;
   --text-theme-xl--line-height: 30px;
+
   --text-theme-sm: 14px;
   --text-theme-sm--line-height: 20px;
+
   --text-theme-xs: 12px;
   --text-theme-xs--line-height: 18px;
 
+  /* =========================================================
+     BASE COLORS
+  ========================================================= */
+
   --color-current: currentColor;
   --color-transparent: transparent;
+
   --color-white: #ffffff;
   --color-black: #101828;
 
-  --color-brand-25: #f2f7ff;
-  --color-brand-50: #ecf3ff;
-  --color-brand-100: #dde9ff;
-  --color-brand-200: #c2d6ff;
-  --color-brand-300: #9cb9ff;
-  --color-brand-400: #7592ff;
-  --color-brand-500: #465fff;
-  --color-brand-600: #3641f5;
-  --color-brand-700: #2a31d8;
-  --color-brand-800: #252dae;
-  --color-brand-900: #262e89;
-  --color-brand-950: #161950;
+  /* =========================================================
+     SYRIAN IDENTITY - GREEN
+  ========================================================= */
+
+  --color-brand-25: #f7fcf9;
+  --color-brand-50: #eaf6ef;
+  --color-brand-100: #d5eddf;
+  --color-brand-200: #b0dcc0;
+  --color-brand-300: #82c59c;
+  --color-brand-400: #4eaa73;
+  --color-brand-500: #198754;
+  --color-brand-600: #157347;
+  --color-brand-700: #12633e;
+  --color-brand-800: #0f5535;
+  --color-brand-900: #0c472d;
+  --color-brand-950: #082f1f;
+
+  /* =========================================================
+     SECONDARY - WARM BROWN
+  ========================================================= */
+
+  --color-brown-25: #fcfaf8;
+  --color-brown-50: #f7f2ed;
+  --color-brown-100: #ede2d7;
+  --color-brown-200: #decdbc;
+  --color-brown-300: #c9b19a;
+  --color-brown-400: #b08f70;
+  --color-brown-500: #967252;
+  --color-brown-600: #805f43;
+  --color-brown-700: #6b4f38;
+  --color-brown-800: #573f2e;
+  --color-brown-900: #463225;
+  --color-brown-950: #302219;
+
+  /* =========================================================
+     GOLD - ACCENT
+  ========================================================= */
+
+  --color-gold-25: #fffdf5;
+  --color-gold-50: #fbf7e8;
+  --color-gold-100: #f5ecc7;
+  --color-gold-200: #eadb9a;
+  --color-gold-300: #ddc768;
+  --color-gold-400: #d2b63f;
+  --color-gold-500: #c9a227;
+  --color-gold-600: #ae891d;
+  --color-gold-700: #917018;
+  --color-gold-800: #755b17;
+  --color-gold-900: #604b17;
+  --color-gold-950: #3f3010;
+
+  /* =========================================================
+     BLUE - THIRD PARTY COMPONENTS
+  ========================================================= */
 
   --color-blue-light-25: #f5fbff;
   --color-blue-light-50: #f0f9ff;
@@ -67,19 +133,28 @@ layer(base);
   --color-blue-light-900: #0b4a6f;
   --color-blue-light-950: #062c41;
 
+  /* =========================================================
+     GRAYS
+  ========================================================= */
+
   --color-gray-25: #fcfcfd;
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f2f4f7;
-  --color-gray-200: #e4e7ec;
-  --color-gray-300: #d0d5dd;
-  --color-gray-400: #98a2b3;
-  --color-gray-500: #667085;
-  --color-gray-600: #475467;
-  --color-gray-700: #344054;
-  --color-gray-800: #1d2939;
-  --color-gray-900: #101828;
-  --color-gray-950: #0c111d;
-  --color-gray-dark: #1a2231;
+  --color-gray-50: #f8faf9;
+  --color-gray-100: #f1f4f2;
+  --color-gray-200: #e2e8e4;
+  --color-gray-300: #cbd5cf;
+  --color-gray-400: #94a39a;
+  --color-gray-500: #64736a;
+  --color-gray-600: #4b5a51;
+  --color-gray-700: #36443c;
+  --color-gray-800: #202c25;
+  --color-gray-900: #142019;
+  --color-gray-950: #0c1510;
+
+  --color-gray-dark: #1b2921;
+
+  /* =========================================================
+     ORANGE
+  ========================================================= */
 
   --color-orange-25: #fffaf5;
   --color-orange-50: #fff6ed;
@@ -94,6 +169,10 @@ layer(base);
   --color-orange-900: #7e2410;
   --color-orange-950: #511c10;
 
+  /* =========================================================
+     SUCCESS
+  ========================================================= */
+
   --color-success-25: #f6fef9;
   --color-success-50: #ecfdf3;
   --color-success-100: #d1fadf;
@@ -107,6 +186,10 @@ layer(base);
   --color-success-900: #054f31;
   --color-success-950: #053321;
 
+  /* =========================================================
+     ERROR
+  ========================================================= */
+
   --color-error-25: #fffbfa;
   --color-error-50: #fef3f2;
   --color-error-100: #fee4e2;
@@ -119,6 +202,10 @@ layer(base);
   --color-error-800: #912018;
   --color-error-900: #7a271a;
   --color-error-950: #55160c;
+
+  /* =========================================================
+     WARNING
+  ========================================================= */
 
   --color-warning-25: #fffcf5;
   --color-warning-50: #fffaeb;
@@ -134,27 +221,53 @@ layer(base);
   --color-warning-950: #4e1d09;
 
   --color-theme-pink-500: #ee46bc;
-
   --color-theme-purple-500: #7a5af8;
 
-  --shadow-theme-md: 0px 4px 8px -2px rgba(16, 24, 40, 0.1),
+  /* =========================================================
+     SHADOWS
+  ========================================================= */
+
+  --shadow-theme-md:
+    0px 4px 8px -2px rgba(16, 24, 40, 0.1),
     0px 2px 4px -2px rgba(16, 24, 40, 0.06);
-  --shadow-theme-lg: 0px 12px 16px -4px rgba(16, 24, 40, 0.08),
+
+  --shadow-theme-lg:
+    0px 12px 16px -4px rgba(16, 24, 40, 0.08),
     0px 4px 6px -2px rgba(16, 24, 40, 0.03);
-  --shadow-theme-sm: 0px 1px 3px 0px rgba(16, 24, 40, 0.1),
+
+  --shadow-theme-sm:
+    0px 1px 3px 0px rgba(16, 24, 40, 0.1),
     0px 1px 2px 0px rgba(16, 24, 40, 0.06);
-  --shadow-theme-xs: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
-  --shadow-theme-xl: 0px 20px 24px -4px rgba(16, 24, 40, 0.08),
+
+  --shadow-theme-xs:
+    0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+
+  --shadow-theme-xl:
+    0px 20px 24px -4px rgba(16, 24, 40, 0.08),
     0px 8px 8px -4px rgba(16, 24, 40, 0.03);
-  --shadow-datepicker: -5px 0 0 #262d3c, 5px 0 0 #262d3c;
-  --shadow-focus-ring: 0px 0px 0px 4px rgba(70, 95, 255, 0.12);
-  --shadow-slider-navigation: 0px 1px 2px 0px rgba(16, 24, 40, 0.1),
+
+  --shadow-datepicker:
+    -5px 0 0 #26382e,
+    5px 0 0 #26382e;
+
+  --shadow-focus-ring:
+    0px 0px 0px 4px rgba(25, 135, 84, 0.14);
+
+  --shadow-slider-navigation:
+    0px 1px 2px 0px rgba(16, 24, 40, 0.1),
     0px 1px 3px 0px rgba(16, 24, 40, 0.1);
-  --shadow-tooltip: 0px 4px 6px -2px rgba(16, 24, 40, 0.05),
+
+  --shadow-tooltip:
+    0px 4px 6px -2px rgba(16, 24, 40, 0.05),
     -8px 0px 20px 8px rgba(16, 24, 40, 0.05);
 
-  --drop-shadow-4xl: 0 35px 35px rgba(0, 0, 0, 0.25),
+  --drop-shadow-4xl:
+    0 35px 35px rgba(0, 0, 0, 0.25),
     0 45px 65px rgba(0, 0, 0, 0.15);
+
+  /* =========================================================
+     Z INDEX
+  ========================================================= */
 
   --z-index-1: 1;
   --z-index-9: 9;
@@ -165,14 +278,10 @@ layer(base);
   --z-index-999999: 999999;
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
+/* =========================================================
+   BASE
+========================================================= */
 
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
   *,
   ::after,
@@ -181,21 +290,31 @@ layer(base);
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
   }
+
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+
+  html {
+    font-family: Outfit, sans-serif;
+  }
+
   body {
-    @apply relative font-normal font-outfit z-1 bg-gray-50;
+    @apply relative z-1 bg-gray-50 font-normal font-outfit;
   }
 }
 
+/* =========================================================
+   SIDEBAR / MENU
+========================================================= */
+
 @utility menu-item {
-  @apply relative flex items-center w-full gap-3 px-3 py-2 font-medium rounded-lg text-theme-sm;
+  @apply relative flex w-full items-center gap-3 rounded-lg px-3 py-2 font-medium text-theme-sm;
 }
 
 @utility menu-item-active {
-  @apply bg-brand-50 text-brand-500 dark:bg-brand-500/[0.12] dark:text-brand-400;
+  @apply bg-brand-50 text-brand-600 dark:bg-brand-500/[0.12] dark:text-brand-400;
 }
 
 @utility menu-item-inactive {
@@ -207,7 +326,7 @@ layer(base);
 }
 
 @utility menu-item-icon-active {
-  @apply text-brand-500 dark:text-brand-400;
+  @apply text-brand-600 dark:text-brand-400;
 }
 
 @utility menu-item-icon-size {
@@ -225,7 +344,7 @@ layer(base);
 }
 
 @utility menu-item-arrow-active {
-  @apply rotate-180 text-brand-500 dark:text-brand-400;
+  @apply rotate-180 text-brand-600 dark:text-brand-400;
 }
 
 @utility menu-item-arrow-inactive {
@@ -237,7 +356,7 @@ layer(base);
 }
 
 @utility menu-dropdown-item-active {
-  @apply bg-brand-50 text-brand-500 dark:bg-brand-500/[0.12] dark:text-brand-400;
+  @apply bg-brand-50 text-brand-600 dark:bg-brand-500/[0.12] dark:text-brand-400;
 }
 
 @utility menu-dropdown-item-inactive {
@@ -245,7 +364,7 @@ layer(base);
 }
 
 @utility menu-dropdown-badge {
-  @apply block rounded-full px-2.5 py-0.5 text-xs font-medium uppercase text-brand-500 dark:text-brand-400;
+  @apply block rounded-full px-2.5 py-0.5 text-xs font-medium uppercase text-brand-600 dark:text-brand-400;
 }
 
 @utility menu-dropdown-badge-active {
@@ -255,14 +374,20 @@ layer(base);
 @utility menu-dropdown-badge-inactive {
   @apply bg-brand-50 group-hover:bg-brand-100 dark:bg-brand-500/15 dark:group-hover:bg-brand-500/20;
 }
+
+/* =========================================================
+   SCROLLBARS
+========================================================= */
+
 @utility no-scrollbar {
-  /* Chrome, Safari and Opera */
   &::-webkit-scrollbar {
     display: none;
   }
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
+
 @utility custom-scrollbar {
   &::-webkit-scrollbar {
     @apply size-1.5;
@@ -273,15 +398,19 @@ layer(base);
   }
 
   &::-webkit-scrollbar-thumb {
-    @apply bg-gray-200 rounded-full dark:bg-gray-700;
+    @apply rounded-full bg-gray-200 dark:bg-gray-700;
   }
 }
+
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #344054;
+  background-color: #36443c;
 }
 
+/* =========================================================
+   INPUTS / CHECKBOX
+========================================================= */
+
 @layer utilities {
-  /* For Remove Date Icon */
   input[type="date"]::-webkit-inner-spin-button,
   input[type="time"]::-webkit-inner-spin-button,
   input[type="date"]::-webkit-calendar-picker-indicator,
@@ -294,11 +423,15 @@ layer(base);
 .tableCheckbox:checked ~ span span {
   @apply opacity-100;
 }
+
 .tableCheckbox:checked ~ span {
   @apply border-brand-500 bg-brand-500;
 }
 
-/* third-party libraries CSS */
+/* =========================================================
+   APEXCHARTS
+========================================================= */
+
 .apexcharts-legend-text {
   @apply !text-gray-700 dark:!text-gray-400;
 }
@@ -316,21 +449,27 @@ layer(base);
   height: 6px;
   width: 6px;
 }
+
 .apexcharts-legend-text {
   @apply !pl-5 !text-gray-700 dark:!text-gray-400;
 }
+
 .apexcharts-tooltip-series-group {
   @apply !p-0;
 }
+
 .apexcharts-tooltip-y-group {
   @apply !p-0;
 }
+
 .apexcharts-tooltip-title {
   @apply !mb-0 !border-b-0 !bg-transparent !p-0 !text-[10px] !leading-4 !text-gray-800 dark:!text-white/90;
 }
+
 .apexcharts-tooltip-text {
   @apply !text-theme-xs !text-gray-700 dark:!text-white/90;
 }
+
 .apexcharts-tooltip-text-y-value {
   @apply !font-medium;
 }
@@ -338,9 +477,11 @@ layer(base);
 .apexcharts-gridline {
   @apply !stroke-gray-100 dark:!stroke-gray-800;
 }
+
 #chartTwo .apexcharts-datalabels-group {
   @apply !-translate-y-24;
 }
+
 #chartTwo .apexcharts-datalabels-group .apexcharts-text {
   @apply !fill-gray-800 !font-semibold dark:!fill-white/90;
 }
@@ -353,22 +494,34 @@ layer(base);
   @apply !p-0 !pl-6;
 }
 
+/* =========================================================
+   JVECTOR MAP
+========================================================= */
+
 .jvectormap-container {
   @apply !bg-gray-50 dark:!bg-gray-900;
 }
+
 .jvectormap-region.jvectormap-element {
   @apply !fill-gray-300 hover:!fill-brand-500 dark:!fill-gray-700 dark:hover:!fill-brand-500;
 }
+
 .jvectormap-marker.jvectormap-element {
   @apply !stroke-gray-200 dark:!stroke-gray-800;
 }
+
 .jvectormap-tip {
-  @apply !bg-brand-500 !border-none !px-2 !py-1;
+  @apply !border-none !bg-brand-500 !px-2 !py-1;
 }
+
 .jvectormap-zoomin,
 .jvectormap-zoomout {
   @apply !hidden;
 }
+
+/* =========================================================
+   STOCK SLIDER
+========================================================= */
 
 .stocks-slider-outer .swiper-button-next:after,
 .stocks-slider-outer .swiper-button-prev:after {
@@ -377,7 +530,7 @@ layer(base);
 
 .stocks-slider-outer .swiper-button-next,
 .stocks-slider-outer .swiper-button-prev {
-  @apply static! mt-0 h-8 w-9 rounded-full border dark:hover:bg-white/[0.05] border-gray-200 !text-gray-700 transition hover:bg-gray-100 dark:border-white/[0.03] dark:bg-gray-800 dark:!text-gray-400  dark:hover:!text-white/90;
+  @apply static! mt-0 h-8 w-9 rounded-full border border-gray-200 text-gray-700 transition hover:bg-gray-100 dark:border-white/[0.03] dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.05] dark:hover:text-white/90;
 }
 
 .stocks-slider-outer .swiper-button-next.swiper-button-disabled,
@@ -390,16 +543,25 @@ layer(base);
   @apply !h-auto !w-auto;
 }
 
+/* =========================================================
+   FLATPICKR
+========================================================= */
+
 .flatpickr-wrapper {
   @apply w-full;
 }
+
 .flatpickr-calendar {
-  @apply mt-2 !bg-white !rounded-xl !p-5 !border !border-gray-200 !shadow-theme-md dark:!border-white/5 !text-gray-500 dark:!bg-gray-dark dark:!text-gray-400 dark:!shadow-theme-xl 2xsm:!w-auto;
-  box-shadow: 0px 4px 8px -2px rgba(16, 24, 40, 0.1),
+  @apply mt-2 !w-auto !rounded-xl !border !border-gray-200 !bg-white !p-5 !text-gray-500 !shadow-theme-md dark:!border-white/5 dark:!bg-gray-dark dark:!text-gray-400 dark:!shadow-theme-xl;
+
+  box-shadow:
+    0px 4px 8px -2px rgba(16, 24, 40, 0.1),
     0px 2px 4px -2px rgba(16, 24, 40, 0.06) !important;
 }
+
 .dark .flatpickr-calendar {
-  box-shadow: 0px 12px 16px -4px rgba(16, 24, 40, 0.08),
+  box-shadow:
+    0px 12px 16px -4px rgba(16, 24, 40, 0.08),
     0px 4px 6px -2px rgba(16, 24, 40, 0.03) !important;
 }
 
@@ -407,6 +569,7 @@ layer(base);
 .flatpickr-months .flatpickr-next-month:hover svg {
   @apply stroke-brand-500;
 }
+
 .flatpickr-calendar.arrowTop:before,
 .flatpickr-calendar.arrowTop:after {
   @apply hidden;
@@ -415,6 +578,7 @@ layer(base);
 .flatpickr-current-month {
   @apply !p-0;
 }
+
 .flatpickr-current-month .cur-month,
 .flatpickr-current-month input.cur-year {
   @apply !h-auto !pt-0 !text-lg !font-medium !text-gray-800 dark:!text-white/90;
@@ -426,16 +590,17 @@ layer(base);
 }
 
 .flatpickr-weekdays {
-  @apply h-auto mt-6 mb-4 !bg-transparent;
+  @apply mt-6 mb-4 h-auto !bg-transparent;
 }
 
 .flatpickr-weekday {
-  @apply !text-theme-sm !font-medium !text-gray-500 dark:!text-gray-400 !bg-transparent;
+  @apply !bg-transparent !text-theme-sm !font-medium !text-gray-500 dark:!text-gray-400;
 }
 
 .flatpickr-day {
   @apply !flex !items-center !text-theme-sm !font-medium !text-gray-800 dark:!text-white/90 dark:hover:!border-gray-300 dark:hover:!bg-gray-900;
 }
+
 .flatpickr-day.nextMonthDay,
 .flatpickr-day.prevMonthDay {
   @apply !text-gray-400;
@@ -444,47 +609,61 @@ layer(base);
 .flatpickr-months > .flatpickr-month {
   background: none !important;
 }
+
 .flatpickr-month .flatpickr-current-month .flatpickr-monthDropdown-months {
   background: none !important;
   appearance: none;
   background-image: none !important;
   font-weight: 500;
 }
+
 .flatpickr-month
   .flatpickr-current-month
   .flatpickr-monthDropdown-months:focus {
   outline: none !important;
   border: 0 !important;
 }
+
 .flatpickr-months .flatpickr-prev-month,
 .flatpickr-months .flatpickr-next-month {
-  @apply !top-7 dark:!fill-white dark:!text-white !bg-transparent;
+  @apply !top-7 !bg-transparent dark:!fill-white dark:!text-white;
 }
+
 .flatpickr-months .flatpickr-prev-month.flatpickr-prev-month,
 .flatpickr-months .flatpickr-next-month.flatpickr-prev-month {
   @apply !left-7;
 }
+
 .flatpickr-months .flatpickr-prev-month.flatpickr-next-month,
 .flatpickr-months .flatpickr-next-month.flatpickr-next-month {
   @apply !right-7;
 }
+
 .flatpickr-days {
   @apply !border-0;
 }
+
 span.flatpickr-weekday,
 .flatpickr-months .flatpickr-month {
-  @apply dark:!fill-white dark:!text-white !bg-none;
+  @apply !bg-none dark:!fill-white dark:!text-white;
 }
+
 .flatpickr-innerContainer {
   @apply !border-b-0;
 }
+
 .flatpickr-months .flatpickr-month {
   @apply !bg-none;
 }
+
 .flatpickr-day.inRange {
-  box-shadow: -5px 0 0 #f9fafb, 5px 0 0 #f9fafb !important;
+  box-shadow:
+    -5px 0 0 #f8faf9,
+    5px 0 0 #f8faf9 !important;
+
   @apply dark:!shadow-datepicker;
 }
+
 .flatpickr-day.inRange,
 .flatpickr-day.prevMonthDay.inRange,
 .flatpickr-day.nextMonthDay.inRange,
@@ -499,12 +678,13 @@ span.flatpickr-weekday,
 .flatpickr-day.nextMonthDay:focus {
   @apply !border-gray-50 !bg-gray-50 dark:!border-0 dark:!border-white/5 dark:!bg-white/5;
 }
+
 .flatpickr-day.selected,
 .flatpickr-day.startRange,
-.flatpickr-day.selected,
 .flatpickr-day.endRange {
   @apply !text-white dark:!text-white;
 }
+
 .flatpickr-day.selected,
 .flatpickr-day.startRange,
 .flatpickr-day.endRange,
@@ -523,13 +703,15 @@ span.flatpickr-weekday,
 .flatpickr-day.selected.nextMonthDay,
 .flatpickr-day.startRange.nextMonthDay,
 .flatpickr-day.endRange.nextMonthDay {
-  background: #465fff;
+  background: #198754;
+
   @apply !border-brand-500 !bg-brand-500 hover:!border-brand-500 hover:!bg-brand-500;
 }
+
 .flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.endRange.startRange + .endRange:not(:nth-child(7n + 1)) {
-  box-shadow: -10px 0 0 #465fff;
+  box-shadow: -10px 0 0 #198754;
 }
 
 .flatpickr-months .flatpickr-prev-month svg,
@@ -538,6 +720,7 @@ span.flatpickr-weekday,
 .flatpickr-months .flatpickr-next-month {
   @apply hover:!fill-none;
 }
+
 .flatpickr-months .flatpickr-prev-month:hover svg,
 .flatpickr-months .flatpickr-next-month:hover svg {
   fill: none !important;
@@ -555,145 +738,201 @@ span.flatpickr-weekday,
   }
 }
 
+/* =========================================================
+   FULL CALENDAR
+========================================================= */
+
 .fc .fc-view-harness {
   @apply max-w-full overflow-x-auto custom-scrollbar;
 }
+
 .fc-dayGridMonth-view.fc-view.fc-daygrid {
   @apply min-w-[718px];
 }
+
 .fc .fc-scrollgrid-section > * {
   border-right-width: 0;
   border-bottom-width: 0;
 }
+
 .fc .fc-scrollgrid {
   border-left-width: 0;
 }
+
 .fc .fc-toolbar.fc-header-toolbar {
   @apply flex-col gap-4 px-6 pt-6 sm:flex-row;
 }
+
 .fc-button-group {
   @apply gap-2;
 }
+
 .fc-button-group .fc-button {
-  @apply flex h-10 w-10 items-center justify-center !rounded-lg border border-gray-200 bg-transparent hover:border-gray-200 hover:bg-gray-50 focus:shadow-none active:!border-gray-200 active:!bg-transparent active:!shadow-none dark:border-gray-800 dark:hover:border-gray-800 dark:hover:bg-gray-900 dark:active:border-gray-800!;
+  @apply flex h-10 w-10 items-center justify-center !rounded-lg border border-gray-200 bg-transparent hover:!border-gray-200 hover:!bg-gray-50 focus:!shadow-none active:!border-gray-200 active:!bg-transparent active:!shadow-none dark:!border-gray-800 dark:hover:!border-gray-800 dark:hover:!bg-gray-900 dark:active:!border-gray-800;
 }
 
 .fc-button-group .fc-button.fc-prev-button:before {
-  @apply inline-block mt-1;
-  content: url("data:image/svg+xml,%3Csvg width='25' height='24' viewBox='0 0 25 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16.0068 6L9.75684 12.25L16.0068 18.5' stroke='%23344054' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+  @apply mt-1 inline-block;
+
+  content: url("data:image/svg+xml,%3Csvg width='25' height='24' viewBox='0 0 25 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16.0068 6L9.75684 12.25L16.0068 18.5' stroke='%2336443C' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
+
 .fc-button-group .fc-button.fc-next-button:before {
-  @apply inline-block mt-1;
-  content: url("data:image/svg+xml,%3Csvg width='25' height='24' viewBox='0 0 25 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.50684 19L15.7568 12.75L9.50684 6.5' stroke='%23344054' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+  @apply mt-1 inline-block;
+
+  content: url("data:image/svg+xml,%3Csvg width='25' height='24' viewBox='0 0 25 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.50684 19L15.7568 12.75L9.50684 6.5' stroke='%2336443C' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
+
 .dark .fc-button-group .fc-button.fc-prev-button:before {
-  content: url("data:image/svg+xml,%3Csvg width='25' height='24' viewBox='0 0 25 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16.0068 6L9.75684 12.25L16.0068 18.5' stroke='%2398A2B3' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+  content: url("data:image/svg+xml,%3Csvg width='25' height='24' viewBox='0 0 25 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16.0068 6L9.75684 12.25L16.0068 18.5' stroke='%2394A39A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
+
 .dark .fc-button-group .fc-button.fc-next-button:before {
-  content: url("data:image/svg+xml,%3Csvg width='25' height='24' viewBox='0 0 25 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.50684 19L15.7568 12.75L9.50684 6.5' stroke='%2398A2B3' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+  content: url("data:image/svg+xml,%3Csvg width='25' height='24' viewBox='0 0 25 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.50684 19L15.75684 12.75L9.50684 6.5' stroke='%2394A39A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
+
 .fc-button-group .fc-button .fc-icon {
   @apply hidden;
 }
+
 .fc-addEventButton-button {
   @apply !rounded-lg !border-0 !bg-brand-500 !px-4 !py-2.5 !text-sm !font-medium hover:!bg-brand-600 focus:!shadow-none;
 }
+
 .fc-toolbar-title {
-  @apply !text-lg !font-medium text-gray-800 dark:text-white/90;
+  @apply !text-lg !font-medium text-gray-800 dark:!text-white/90;
 }
+
 .fc-header-toolbar.fc-toolbar .fc-toolbar-chunk:last-child {
   @apply rounded-lg bg-gray-100 p-0.5 dark:bg-gray-900;
 }
-.fc-header-toolbar.fc-toolbar .fc-toolbar-chunk:last-child .fc-button {
-  @apply !h-auto !w-auto rounded-md !border-0 bg-transparent !px-5 !py-2 text-sm font-medium text-gray-500 hover:text-gray-700 focus:!shadow-none dark:text-gray-400;
+
+.fc-header-toolbar.fc-toolbar
+  .fc-toolbar-chunk:last-child
+  .fc-button {
+  @apply !h-auto !w-auto rounded-md !border-0 bg-transparent !px-5 !py-2 text-sm font-medium text-gray-500 hover:!text-gray-700 focus:!shadow-none dark:!text-gray-400;
 }
+
 .fc-header-toolbar.fc-toolbar
   .fc-toolbar-chunk:last-child
   .fc-button.fc-button-active {
-  @apply text-gray-900 bg-white dark:bg-gray-800 dark:text-white;
+  @apply bg-white text-gray-900 dark:bg-gray-800 dark:text-white;
 }
+
 .fc-theme-standard th {
-  @apply !border-x-0 border-t !border-gray-200 bg-gray-50 !text-left dark:!border-gray-800 dark:bg-gray-900;
+  @apply !border-x-0 !border-t !border-gray-200 !bg-gray-50 !text-left dark:!border-gray-800 dark:!bg-gray-900;
 }
+
 .fc-theme-standard td,
 .fc-theme-standard .fc-scrollgrid {
   @apply !border-gray-200 dark:!border-gray-800;
 }
+
 .fc .fc-col-header-cell-cushion {
   @apply !px-5 !py-4 text-sm font-medium uppercase text-gray-400;
 }
+
 .fc .fc-daygrid-day.fc-day-today {
   @apply bg-transparent;
 }
+
 .fc .fc-daygrid-day {
   @apply p-2;
 }
+
 .fc .fc-daygrid-day.fc-day-today .fc-scrollgrid-sync-inner {
   @apply rounded-sm bg-gray-100 dark:bg-white/[0.03];
 }
+
 .fc .fc-daygrid-day-number {
   @apply !p-3 text-sm font-medium text-gray-700 dark:text-gray-400;
 }
+
 .fc .fc-daygrid-day-top {
   @apply !flex-row;
 }
+
 .fc .fc-day-other .fc-daygrid-day-top {
   opacity: 1;
 }
+
 .fc .fc-day-other .fc-daygrid-day-top .fc-daygrid-day-number {
   @apply text-gray-400 dark:text-white/30;
 }
+
 .event-fc-color {
   @apply rounded-lg py-2.5 pl-4 pr-3;
 }
+
 .event-fc-color .fc-event-title {
   @apply p-0 text-sm font-normal text-gray-700;
 }
+
 .fc-daygrid-event-dot {
-  @apply w-1 h-5 ml-0 mr-3 border-none rounded-sm;
+  @apply ml-0 mr-3 h-5 w-1 rounded-sm border-none;
 }
+
 .fc-event {
-  @apply focus:shadow-none;
+  @apply focus:!shadow-none;
 }
+
 .fc-daygrid-event.fc-event-start {
   @apply !ml-3;
 }
+
 .event-fc-color.fc-bg-success {
   @apply border-success-50 bg-success-50;
 }
+
 .event-fc-color.fc-bg-danger {
   @apply border-error-50 bg-error-50;
 }
+
 .event-fc-color.fc-bg-primary {
   @apply border-brand-50 bg-brand-50;
 }
+
 .event-fc-color.fc-bg-warning {
   @apply border-orange-50 bg-orange-50;
 }
+
 .event-fc-color.fc-bg-success .fc-daygrid-event-dot {
   @apply bg-success-500;
 }
+
 .event-fc-color.fc-bg-danger .fc-daygrid-event-dot {
   @apply bg-error-500;
 }
+
 .event-fc-color.fc-bg-primary .fc-daygrid-event-dot {
   @apply bg-brand-500;
 }
+
 .event-fc-color.fc-bg-warning .fc-daygrid-event-dot {
   @apply bg-orange-500;
 }
+
 .fc-direction-ltr .fc-timegrid-slot-label-frame {
   @apply px-3 py-1.5 text-left text-sm font-medium text-gray-500 dark:text-gray-400;
 }
+
 .fc .fc-timegrid-axis-cushion {
   @apply text-sm font-medium text-gray-500 dark:text-gray-400;
 }
+
+/* =========================================================
+   DATE ICON
+========================================================= */
 
 .input-date-icon::-webkit-inner-spin-button,
 .input-date-icon::-webkit-calendar-picker-indicator {
   opacity: 0;
   -webkit-appearance: none;
 }
+
+/* =========================================================
+   SWIPER
+========================================================= */
 
 .swiper-button-prev svg,
 .swiper-button-next svg {
@@ -706,12 +945,14 @@ span.flatpickr-weekday,
 .carouselFour .swiper-button-prev:after {
   @apply hidden;
 }
+
 .carouselTwo .swiper-button-next.swiper-button-disabled,
 .carouselTwo .swiper-button-prev.swiper-button-disabled,
 .carouselFour .swiper-button-next.swiper-button-disabled,
 .carouselFour .swiper-button-prev.swiper-button-disabled {
   @apply bg-white/60 !opacity-100;
 }
+
 .carouselTwo .swiper-button-next,
 .carouselTwo .swiper-button-prev,
 .carouselFour .swiper-button-next,
@@ -741,46 +982,68 @@ span.flatpickr-weekday,
 
 .carouselThree .swiper-pagination-bullet-active,
 .carouselFour .swiper-pagination-bullet-active {
-  @apply w-6.5 rounded-xl;
+  @apply w-6.5 rounded-xl !bg-brand-500;
 }
+
+/* =========================================================
+   FORM CHECK
+========================================================= */
 
 .form-check-input:checked ~ span {
   @apply border-[6px] border-brand-500 bg-brand-500 dark:border-brand-500;
 }
 
+/* =========================================================
+   TASKS
+========================================================= */
+
 .taskCheckbox:checked ~ .box span {
-  @apply opacity-100 bg-brand-500;
+  @apply bg-brand-500 opacity-100;
 }
+
 .taskCheckbox:checked ~ p {
   @apply text-gray-400 line-through;
 }
+
 .taskCheckbox:checked ~ .box {
   @apply border-brand-500 bg-brand-500 dark:border-brand-500;
 }
 
 .task {
-  transition: all 0.2s ease; /* Smooth transition for visual effects */
+  transition: all 0.2s ease;
 }
 
 .task {
   border-radius: 0.75rem;
-  box-shadow: 0px 1px 3px 0px rgba(16, 24, 40, 0.1),
+
+  box-shadow:
+    0px 1px 3px 0px rgba(16, 24, 40, 0.1),
     0px 1px 2px 0px rgba(16, 24, 40, 0.06);
+
   opacity: 0.8;
-  cursor: grabbing; /* Changes the cursor to indicate dragging */
+  cursor: grabbing;
 }
+
+/* =========================================================
+   CALENDAR
+========================================================= */
 
 .custom-calendar .fc-h-event {
   background-color: transparent;
   border: none;
   color: black;
 }
+
 .fc.fc-media-screen {
   @apply min-h-screen;
 }
 
+/* =========================================================
+   SIMPLEBAR
+========================================================= */
+
 .simplebar-scrollbar::before {
-  @apply !bg-gray-200 !rounded-full dark:!bg-gray-700 !opacity-100;
+  @apply !rounded-full !bg-gray-200 !opacity-100 dark:!bg-gray-700;
 }
 
 .dark .simplebar-scrollbar::before {
@@ -791,10 +1054,14 @@ span.flatpickr-weekday,
   @apply opacity-100;
 }
 
+/* =========================================================
+   LEAFLET
+========================================================= */
+
 @import "leaflet/dist/leaflet.css";
 
 /* =========================================================
-   Investment Map Tooltip
+   INVESTMENT MAP TOOLTIP
 ========================================================= */
 
 .investment-map-tooltip {
@@ -802,14 +1069,18 @@ span.flatpickr-weekday,
   padding: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
+
+  font-family: Outfit, sans-serif !important;
 }
 
 /* إخفاء سهم Leaflet الافتراضي */
+
 .investment-map-tooltip::before {
   display: none !important;
 }
 
 /* إزالة المسافات الداخلية الافتراضية */
+
 .investment-map-tooltip .leaflet-tooltip-content {
   margin: 0 !important;
   padding: 0 !important;
@@ -823,15 +1094,17 @@ span.flatpickr-weekday,
   width: 270px;
   max-width: 270px;
 
-  border: 1px solid #e5e7eb;
+  border: 1px solid #e2e8e4;
   border-radius: 14px;
 
   background: #ffffff;
 
   padding: 14px;
 
+  font-family: Outfit, sans-serif;
+
   box-shadow:
-    0 10px 25px rgba(0, 0, 0, 0.15),
+    0 10px 25px rgba(25, 80, 50, 0.15),
     0 3px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -840,8 +1113,8 @@ span.flatpickr-weekday,
 ========================================================= */
 
 .dark .investment-map-tooltip > div {
-  border-color: #374151;
-  background: #111827;
+  border-color: #36443c;
+  background: #17231c;
 
   box-shadow:
     0 10px 25px rgba(0, 0, 0, 0.45),
@@ -853,24 +1126,30 @@ span.flatpickr-weekday,
 ========================================================= */
 
 .investment-map-tooltip a {
-  display: block;
+  display: block !important;
 
-  width: 100%;
+  width: 100% !important;
 
-  margin-top: 12px;
+  margin-top: 12px !important;
 
-  border-radius: 8px;
+  box-sizing: border-box;
 
-  background: #465fff;
+  border-radius: 8px !important;
 
-  padding: 8px 10px;
+  background: #3f6f4a !important;
+
+  padding: 8px 10px !important;
 
   color: #ffffff !important;
 
-  font-size: 12px;
-  font-weight: 600;
+  font-family: Outfit, sans-serif !important;
 
-  line-height: 1.4;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+
+  line-height: 1.4 !important;
+
+  white-space: nowrap !important;
 
   text-align: center;
 
@@ -882,7 +1161,7 @@ span.flatpickr-weekday,
 }
 
 .investment-map-tooltip a:hover {
-  background: #3641d8;
+  background: #345c3d !important;
 }
 
 .investment-map-tooltip a:active {
@@ -890,13 +1169,15 @@ span.flatpickr-weekday,
 }
 
 /* =========================================================
-   نصوص البطاقة
+   نصوص بطاقة الخريطة
 ========================================================= */
 
 .investment-map-tooltip h3 {
   margin: 0;
 
-  color: #1f2937;
+  color: #202c25;
+
+  font-family: Outfit, sans-serif;
 
   font-size: 14px;
   font-weight: 700;
@@ -906,4 +1187,98 @@ span.flatpickr-weekday,
 
 .dark .investment-map-tooltip h3 {
   color: #f9fafb;
+}
+
+/* =========================================================
+   INVESTMENT BRAND OVERRIDES
+========================================================= */
+
+.progress-brand,
+.progress-bar,
+.investment-progress {
+  background-color: #198754;
+}
+
+.bg-brand-500 {
+  background-color: #198754 !important;
+}
+
+.bg-brand-600 {
+  background-color: #157347 !important;
+}
+
+.text-brand-500 {
+  color: #198754 !important;
+}
+
+.text-brand-600 {
+  color: #157347 !important;
+}
+
+.border-brand-500 {
+  border-color: #198754 !important;
+}
+
+.border-brand-200 {
+  border-color: #b0dcc0 !important;
+}
+
+.bg-brand-50 {
+  background-color: #eaf6ef !important;
+}
+
+.bg-brand-100 {
+  background-color: #d5eddf !important;
+}
+
+/* =========================================================
+   BROWN IDENTITY UTILITIES
+========================================================= */
+
+.bg-brown-50 {
+  background-color: #f7f2ed !important;
+}
+
+.bg-brown-100 {
+  background-color: #ede2d7 !important;
+}
+
+.bg-brown-500 {
+  background-color: #967252 !important;
+}
+
+.text-brown-500 {
+  color: #967252 !important;
+}
+
+.text-brown-600 {
+  color: #805f43 !important;
+}
+
+.border-brown-200 {
+  border-color: #decdbc !important;
+}
+
+/* =========================================================
+   GOLD IDENTITY UTILITIES
+========================================================= */
+
+.bg-gold-50 {
+  background-color: #fbf7e8 !important;
+}
+
+.bg-gold-100 {
+  background-color: #f5ecc7 !important;
+}
+
+.bg-gold-500 {
+  background-color: #c9a227 !important;
+}
+
+.text-gold-500 {
+  color: #c9a227 !important;
+}
+
+.border-gold-200 {
+  border-color: #eadb9a !important;
 }

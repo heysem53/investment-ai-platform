@@ -389,22 +389,24 @@ export default function Opportunities() {
               </p>
             </div>
 
-            <button
-              type="button"
-              className="
-                rounded-lg
-                bg-brand-500
-                px-4
-                py-2.5
-                text-sm
-                font-medium
-                text-white
-                transition
-                hover:bg-brand-600
-              "
-            >
-              + إضافة فرصة
-            </button>
+            <Link
+  to="/opportunities/new"
+  className="
+    inline-flex
+    items-center
+    rounded-lg
+    bg-brand-500
+    px-4
+    py-2.5
+    text-sm
+    font-medium
+    text-white
+    transition
+    hover:bg-brand-600
+  "
+>
+  + إضافة فرصة
+</Link>
 
           </div>
 

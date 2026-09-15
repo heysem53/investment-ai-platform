@@ -8,262 +8,6 @@ import {
 } from "../../services/opportunityApi";
 
 /* =========================================================
-   Types
-========================================================= */
-
-type OpportunityDetailsData = {
-  opportunity: {
-    opportunity_id: number;
-    opportunity_code: string;
-    name_ar: string;
-    name_en?: string | null;
-    sector_id?: number | null;
-    sub_sector_id?: number | null;
-    location_id?: number | null;
-    ownership_id?: number | null;
-    project_type_id?: number | null;
-    investor_type_id?: number | null;
-    contract_type_id?: number | null;
-    provider_entity_id?: number | null;
-    project_scale_id?: number | null;
-    status_id?: number | null;
-    created_at?: string | null;
-    updated_at?: string | null;
-    is_active?: boolean | null;
-  };
-
-  references: {
-    sector_id?: number | null;
-    sector_name_ar?: string | null;
-    sector_name_en?: string | null;
-
-    sub_sector_id?: number | null;
-    sub_sector_name_ar?: string | null;
-    sub_sector_name_en?: string | null;
-
-    project_type_id?: number | null;
-    project_type_name_ar?: string | null;
-    project_type_name_en?: string | null;
-
-    project_scale_id?: number | null;
-    project_scale_name_ar?: string | null;
-    project_scale_name_en?: string | null;
-
-    investor_type_id?: number | null;
-    investor_type_name_ar?: string | null;
-    investor_type_name_en?: string | null;
-
-    contract_type_id?: number | null;
-    contract_type_name_ar?: string | null;
-    contract_type_name_en?: string | null;
-
-    status_id?: number | null;
-    status_name_ar?: string | null;
-    status_name_en?: string | null;
-
-    ownership_id?: number | null;
-    ownership_name_ar?: string | null;
-    ownership_name_en?: string | null;
-
-    provider_entity_id?: number | null;
-    provider_entity_name_ar?: string | null;
-    provider_entity_name_en?: string | null;
-
-    entity_type_id?: number | null;
-    provider_entity_type_name_ar?: string | null;
-    provider_entity_type_name_en?: string | null;
-  };
-
-  financial?: {
-    financial_id?: number | null;
-    opportunity_id?: number | null;
-    estimated_cost?: number | null;
-    currency_id?: number | null;
-    estimation_source_ar?: string | null;
-    estimation_source_en?: string | null;
-    annual_investment_return?: number | null;
-    investment_period_years?: number | null;
-    construction_period_years?: number | null;
-    grace_period_years?: number | null;
-    financing_model_id?: number | null;
-    expected_return_rate?: number | null;
-    notes_ar?: string | null;
-    notes_en?: string | null;
-    currency_code?: string | null;
-    currency_name_ar?: string | null;
-    currency_name_en?: string | null;
-    currency_symbol?: string | null;
-    financing_model_name_ar?: string | null;
-    financing_model_name_en?: string | null;
-  } | null;
-
-  location?: {
-    location_id?: number | null;
-    opportunity_id?: number | null;
-    description_ar?: string | null;
-    description_en?: string | null;
-    administrative_unit_id?: number | null;
-    ownership_id?: number | null;
-    property_numbers?: string | null;
-    area_value?: number | null;
-    area_unit_id?: number | null;
-    expandable?: boolean | string | null;
-    expansion_area_value?: number | null;
-    latitude?: number | null;
-    longitude?: number | null;
-    map_url?: string | null;
-    notes_ar?: string | null;
-    notes_en?: string | null;
-    area_unit_name_ar?: string | null;
-    area_unit_name_en?: string | null;
-    area_unit_symbol?: string | null;
-    administrative_unit_name_ar?: string | null;
-    administrative_unit_name_en?: string | null;
-    administrative_unit_type_name_ar?: string | null;
-    administrative_unit_type_name_en?: string | null;
-  } | null;
-
-  project_details?: {
-    project_detail_id?: number | null;
-    opportunity_id?: number | null;
-    description_ar?: string | null;
-    description_en?: string | null;
-    main_product_ar?: string | null;
-    main_product_en?: string | null;
-    main_product_specifications_ar?: string | null;
-    main_product_specifications_en?: string | null;
-    secondary_products_ar?: string | null;
-    secondary_products_en?: string | null;
-    production_capacity?: number | null;
-    capacity_unit_id?: number | null;
-    target_market_ar?: string | null;
-    target_market_en?: string | null;
-    economic_social_justification_ar?: string | null;
-    economic_social_justification_en?: string | null;
-    capacity_unit_name_ar?: string | null;
-    capacity_unit_name_en?: string | null;
-    capacity_unit_symbol?: string | null;
-  } | null;
-
-  employment?: {
-    employment_id?: number | null;
-    opportunity_id?: number | null;
-    local_specialized_workers?: number | null;
-    local_unskilled_workers?: number | null;
-    local_total_workers?: number | null;
-    foreign_specialized_workers?: number | null;
-    foreign_unskilled_workers?: number | null;
-    foreign_total_workers?: number | null;
-    total_jobs?: number | null;
-    required_skills_ar?: string | null;
-    required_skills_en?: string | null;
-    notes_ar?: string | null;
-    notes_en?: string | null;
-  } | null;
-
-  infrastructure: Array<{
-    opportunity_infrastructure_id?: number | null;
-    opportunity_id?: number | null;
-    infrastructure_type_id?: number | null;
-    availability_status?: string | null;
-    description_ar?: string | null;
-    description_en?: string | null;
-    is_active?: boolean | null;
-    infrastructure_type_name_ar?: string | null;
-    infrastructure_type_name_en?: string | null;
-    infrastructure_category?: string | null;
-  }>;
-
-  site_features: Array<{
-    opportunity_site_feature_id?: number | null;
-    opportunity_id?: number | null;
-    site_feature_id?: number | null;
-    feature_value_ar?: string | null;
-    feature_value_en?: string | null;
-    notes_ar?: string | null;
-    notes_en?: string | null;
-    is_active?: boolean | null;
-    feature_name_ar?: string | null;
-    feature_name_en?: string | null;
-    feature_description_ar?: string | null;
-    feature_description_en?: string | null;
-  }>;
-
-  approvals: Array<{
-    opportunity_approval_id?: number | null;
-    opportunity_id?: number | null;
-    approval_type_id?: number | null;
-    approval_name_ar?: string | null;
-    approval_name_en?: string | null;
-    approval_status_ar?: string | null;
-    approval_status_en?: string | null;
-    issuing_entity_id?: number | null;
-    notes_ar?: string | null;
-    notes_en?: string | null;
-    approval_type_name_ar?: string | null;
-    approval_type_name_en?: string | null;
-    issuing_entity_name_ar?: string | null;
-    issuing_entity_name_en?: string | null;
-  }>;
-
-  entities: Array<{
-    opportunity_entity_id?: number | null;
-    opportunity_id?: number | null;
-    entity_id?: number | null;
-    relation_type_id?: number | null;
-    notes_ar?: string | null;
-    notes_en?: string | null;
-    created_at?: string | null;
-    is_active?: boolean | null;
-    entity_name_ar?: string | null;
-    entity_name_en?: string | null;
-    entity_phone?: string | null;
-    entity_email?: string | null;
-    entity_type_name_ar?: string | null;
-    entity_type_name_en?: string | null;
-    relation_type_name_ar?: string | null;
-    relation_type_name_en?: string | null;
-  }>;
-
-  investors: Array<{
-    opportunity_investor_id?: number | null;
-    opportunity_id?: number | null;
-    investor_type_id?: number | null;
-    entity_id?: number | null;
-    notes_ar?: string | null;
-    notes_en?: string | null;
-    investor_type_name_ar?: string | null;
-    investor_type_name_en?: string | null;
-    entity_name_ar?: string | null;
-    entity_name_en?: string | null;
-  }>;
-
-  contracts: Array<{
-    opportunity_contract_id?: number | null;
-    opportunity_id?: number | null;
-    contract_type_id?: number | null;
-    notes_ar?: string | null;
-    notes_en?: string | null;
-    contract_type_name_ar?: string | null;
-    contract_type_name_en?: string | null;
-  }>;
-
-  attachments: Array<{
-    opportunity_attachment_id?: number | null;
-    opportunity_id?: number | null;
-    attachment_type_id?: number | null;
-    file_name?: string | null;
-    file_url?: string | null;
-    document_status?: string | null;
-    uploaded_date?: string | null;
-    notes_ar?: string | null;
-    notes_en?: string | null;
-    attachment_type_name_ar?: string | null;
-    attachment_type_name_en?: string | null;
-  }>;
-};
-
-/* =========================================================
    Main Component
 ========================================================= */
 
@@ -271,7 +15,7 @@ export default function OpportunityDetails() {
   const { code } = useParams();
 
   const [data, setData] =
-    useState<OpportunityDetailsData | null>(null);
+    useState<OpportunityApiResponse | null>(null);
 
   const [loading, setLoading] = useState(true);
 
@@ -282,10 +26,8 @@ export default function OpportunityDetails() {
     }
 
     getOpportunityByCodeApi(code)
-      .then((result: OpportunityApiResponse) => {
-        setData(
-          result as unknown as OpportunityDetailsData
-        );
+      .then((result) => {
+        setData(result);
       })
       .catch((error) => {
         console.error(
@@ -560,269 +302,12 @@ export default function OpportunityDetails() {
 
   /* =========================================================
      الجاهزية الاستثمارية
+     مصدرها الوحيد الآن هو Backend / analyze_readiness
   ========================================================= */
 
-  const readiness = (() => {
-    let score = 0;
-
-    /* ---------------------------------------------------------
-       1. البيانات الأساسية — 10%
-    --------------------------------------------------------- */
-
-    const basicFields = [
-      opportunity.opportunity_code,
-      opportunity.name_ar,
-      opportunity.sector_id,
-      opportunity.sub_sector_id,
-      opportunity.project_type_id,
-      opportunity.investor_type_id,
-      opportunity.contract_type_id,
-      opportunity.provider_entity_id,
-      opportunity.ownership_id,
-    ];
-
-    const completedBasic = basicFields.filter(
-      (value) =>
-        value !== null &&
-        value !== undefined &&
-        String(value).trim() !== ""
-    ).length;
-
-    score +=
-      (completedBasic / basicFields.length) * 10;
-
-    /* ---------------------------------------------------------
-       2. الموقع — 15%
-    --------------------------------------------------------- */
-
-    if (location) {
-      let locationScore = 0;
-
-      if (location.description_ar)
-        locationScore += 3;
-
-      if (location.administrative_unit_id)
-        locationScore += 2;
-
-      if (location.area_value)
-        locationScore += 2;
-
-      if (location.area_unit_id)
-        locationScore += 1;
-
-      if (
-        location.latitude !== null &&
-        location.latitude !== undefined &&
-        location.longitude !== null &&
-        location.longitude !== undefined
-      ) {
-        locationScore += 3;
-      }
-
-      if (location.map_url)
-        locationScore += 1;
-
-      if (
-        location.expandable !== null &&
-        location.expandable !== undefined
-      ) {
-        locationScore += 1;
-      }
-
-      if (
-        expandable &&
-        location.expansion_area_value
-      ) {
-        locationScore += 2;
-      }
-
-      score += Math.min(
-        locationScore,
-        15
-      );
-    }
-
-    /* ---------------------------------------------------------
-       3. البيانات المالية — 20%
-    --------------------------------------------------------- */
-
-    if (financial) {
-      let financialScore = 0;
-
-      if (financial.estimated_cost)
-        financialScore += 5;
-
-      if (financial.currency_id)
-        financialScore += 2;
-
-      if (financial.estimation_source_ar)
-        financialScore += 2;
-
-      if (financial.annual_investment_return)
-        financialScore += 2;
-
-      if (financial.investment_period_years)
-        financialScore += 3;
-
-      if (financial.construction_period_years)
-        financialScore += 2;
-
-      if (financial.financing_model_id)
-        financialScore += 2;
-
-      if (financial.expected_return_rate)
-        financialScore += 2;
-
-      score += Math.min(
-        financialScore,
-        20
-      );
-    }
-
-    /* ---------------------------------------------------------
-       4. تفاصيل المشروع — 15%
-    --------------------------------------------------------- */
-
-    if (projectDetails) {
-      let projectScore = 0;
-
-      if (projectDetails.description_ar)
-        projectScore += 4;
-
-      if (projectDetails.main_product_ar)
-        projectScore += 2;
-
-      if (
-        projectDetails.main_product_specifications_ar
-      )
-        projectScore += 2;
-
-      if (
-        projectDetails.production_capacity
-      )
-        projectScore += 2;
-
-      if (
-        projectDetails.capacity_unit_id
-      )
-        projectScore += 1;
-
-      if (
-        projectDetails.target_market_ar
-      )
-        projectScore += 2;
-
-      if (
-        projectDetails.economic_social_justification_ar
-      )
-        projectScore += 2;
-
-      score += Math.min(
-        projectScore,
-        15
-      );
-    }
-
-    /* ---------------------------------------------------------
-       5. البنية التحتية — 10%
-    --------------------------------------------------------- */
-
-    if (
-      Array.isArray(data.infrastructure) &&
-      data.infrastructure.length > 0
-    ) {
-      const available =
-        data.infrastructure.filter((item) => {
-          const status = String(
-            item.availability_status ?? ""
-          )
-            .toLowerCase()
-            .trim();
-
-          return (
-            status === "available" ||
-            status === "متوفر" ||
-            status === "متاحة" ||
-            status === "متاح"
-          );
-        }).length;
-
-      score +=
-        (available /
-          data.infrastructure.length) *
-        10;
-    }
-
-    /* ---------------------------------------------------------
-       6. الموافقات — 15%
-    --------------------------------------------------------- */
-
-    if (
-      Array.isArray(data.approvals) &&
-      data.approvals.length > 0
-    ) {
-      const approved =
-        data.approvals.filter((item) => {
-          const status = String(
-            item.approval_status_ar ??
-              item.approval_status_en ??
-              ""
-          )
-            .toLowerCase()
-            .trim();
-
-          return (
-            status.includes("مكتمل") ||
-            status.includes("موافق") ||
-            status.includes("معتمد") ||
-            status.includes("approved") ||
-            status.includes("complete")
-          );
-        }).length;
-
-      score +=
-        (approved /
-          data.approvals.length) *
-        15;
-    }
-
-    /* ---------------------------------------------------------
-       7. الوثائق — 5%
-    --------------------------------------------------------- */
-
-    if (
-      Array.isArray(data.attachments) &&
-      data.attachments.length > 0
-    ) {
-      score += 5;
-    }
-
-    /* ---------------------------------------------------------
-       8. العمالة والتشغيل — 5%
-    --------------------------------------------------------- */
-
-    if (employment?.total_jobs) {
-      score += 5;
-    }
-
-    /* ---------------------------------------------------------
-       9. خصائص الموقع — 5%
-    --------------------------------------------------------- */
-
-    if (
-      Array.isArray(data.site_features) &&
-      data.site_features.length > 0
-    ) {
-      score += 5;
-    }
-
-    return Math.round(
-      Math.min(
-        Math.max(score, 0),
-        100
-      )
-    );
-  })();
+  const readiness = Number(
+    data.readiness ?? 0
+  );
 
   /* =========================================================
      البنية التحتية
@@ -1805,7 +1290,7 @@ function ReadinessCard({
       </h2>
 
       <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-        يعتمد على اكتمال البيانات الاستثمارية المتوفرة
+        مؤشر تقديري يعتمد على حالة الموافقات والوثائق والبيانات الأساسية للفرصة
       </p>
 
       <div className="mt-7 flex items-end justify-between">
@@ -1944,13 +1429,39 @@ function ApprovalRow({
   name: string;
   status: string;
 }) {
+  const normalizedStatus = status
+    .toLowerCase()
+    .trim();
+
+  const isAvailable =
+    normalizedStatus.includes("متوفر") ||
+    normalizedStatus.includes("متاحة") ||
+    normalizedStatus.includes("متاح") ||
+    normalizedStatus.includes("available") ||
+    normalizedStatus.includes("مكتملة") ||
+    normalizedStatus.includes("مكتمل");
+
+  const isPartial =
+    normalizedStatus.includes("جزئي") ||
+    normalizedStatus.includes("partial") ||
+    normalizedStatus.includes("قيد") ||
+    normalizedStatus.includes("إجراء");
+
+  const statusClass = isAvailable
+    ? "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400"
+    : isPartial
+    ? "bg-yellow-50 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400"
+    : "bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400";
+
   return (
     <div className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 px-4 py-3 dark:border-gray-800">
       <span className="text-sm text-gray-700 dark:text-gray-300">
         {name}
       </span>
 
-      <span className="text-xs font-medium text-green-600 dark:text-green-400">
+      <span
+        className={`rounded-full px-3 py-1 text-xs font-medium ${statusClass}`}
+      >
         {status}
       </span>
     </div>
