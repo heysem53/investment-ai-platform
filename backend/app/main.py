@@ -1,62 +1,144 @@
+import os
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
+
 from .database import engine
 from .services.opportunity_service import get_opportunity_by_code
 from .ai.router import router as ai_router
 
-# =========================================================
-# FastAPI
-# =========================================================
+
 app = FastAPI(
     title="Investment AI API",
     version="2.0.0",
 )
 
-app.include_router(ai_router)
 
-# =========================================================
+# ------------------------------------------------------------------
+# Temporary Database Seed Import
+# ------------------------------------------------------------------
+
+from pathlib import Path
+
+
+def seed_database():
+    seed_file = (
+        Path(__file__).resolve().parents[2]
+        / "investment_db_inserts.sql"
+    )
+
+    if not seed_file.exists():
+        return
+
+    try:
+        with engine.begin() as connection:
+            table_exists = connection.execute(
+                text(
+                    """
+                    SELECT to_regclass(
+                        'public.investment_opportunities'
+                    )
+                    """
+                )
+            ).scalar()
+
+            if table_exists is not None:
+                return
+
+            sql_content = seed_file.read_text(
+                encoding="utf-8"
+            )
+
+            connection.exec_driver_sql(sql_content)
+
+    except Exception as error:
+        print(
+            f"Temporary database seed failed: {error}"
+        )
+
+
+seed_database()
+
+# ------------------------------------------------------------------
 # CORS
-# =========================================================
+# ------------------------------------------------------------------
+
+default_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+configured_origins = os.getenv("CORS_ORIGINS", "")
+
+allowed_origins = (
+    [
+        origin.strip()
+        for origin in configured_origins.split(",")
+        if origin.strip()
+    ]
+    if configured_origins
+    else default_origins
+)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# =========================================================
-# Database Helper
-# =========================================================
-def fetch_all(query: str, params: dict | None = None):
+
+# ------------------------------------------------------------------
+# Routers
+# ------------------------------------------------------------------
+
+app.include_router(ai_router)
+
+
+# ------------------------------------------------------------------
+# Database Helpers
+# ------------------------------------------------------------------
+
+def fetch_all(
+    query: str,
+    params: dict | None = None,
+):
     with engine.connect() as connection:
         result = connection.execute(
             text(query),
             params or {},
         )
+
         return [
             dict(row._mapping)
             for row in result.fetchall()
         ]
 
-def fetch_one(query: str, params: dict | None = None):
+
+def fetch_one(
+    query: str,
+    params: dict | None = None,
+):
     with engine.connect() as connection:
         result = connection.execute(
             text(query),
             params or {},
         )
+
         row = result.fetchone()
+
         if not row:
             return None
+
         return dict(row._mapping)
 
-# =========================================================
+
+# ------------------------------------------------------------------
 # Root
-# =========================================================
+# ------------------------------------------------------------------
+
 @app.get("/")
 def root():
     return {
@@ -65,9 +147,11 @@ def root():
         "database": "PostgreSQL",
     }
 
-# =========================================================
-# Health
-# =========================================================
+
+# ------------------------------------------------------------------
+# Health Check
+# ------------------------------------------------------------------
+
 @app.get("/api/health")
 def health():
     try:
@@ -76,20 +160,24 @@ def health():
             SELECT current_database() AS database
             """
         )
+
         return {
             "status": "ok",
             "message": "API is healthy",
             "database": database["database"],
         }
-    except Exception as error:
+
+    except Exception:
         return {
             "status": "error",
-            "message": str(error),
+            "message": "Database connection failed",
         }
 
-# =========================================================
+
+# ------------------------------------------------------------------
 # Database Test
-# =========================================================
+# ------------------------------------------------------------------
+
 @app.get("/api/db-test")
 def db_test():
     try:
@@ -100,38 +188,44 @@ def db_test():
                 version() AS postgresql
             """
         )
+
         return {
             "status": "ok",
             "database": row["database"],
             "postgresql": row["postgresql"],
         }
-    except Exception as error:
-        return {
-            "status": "error",
-            "message": str(error),
-        }
 
-# =========================================================
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail="Database connection test failed",
+        ) from error
+
+
+# ------------------------------------------------------------------
 # Database Statistics
-# =========================================================
+# ------------------------------------------------------------------
+
 @app.get("/api/db-stats")
 def db_stats():
+    tables = [
+        "investment_opportunities",
+        "sectors",
+        "sub_sectors",
+        "locations",
+        "project_details",
+        "financial_data",
+        "employment",
+        "entities",
+        "opportunity_approvals",
+        "opportunity_infrastructure",
+        "opportunity_site_features",
+        "opportunity_attachments",
+    ]
+
     try:
-        tables = [
-            "investment_opportunities",
-            "sectors",
-            "sub_sectors",
-            "locations",
-            "project_details",
-            "financial_data",
-            "employment",
-            "entities",
-            "opportunity_approvals",
-            "opportunity_infrastructure",
-            "opportunity_site_features",
-            "opportunity_attachments",
-        ]
         result = {}
+
         for table in tables:
             row = fetch_one(
                 f'''
@@ -139,20 +233,25 @@ def db_stats():
                 FROM "{table}"
                 '''
             )
+
             result[table] = row["count"]
+
         return {
             "status": "ok",
             "tables": result,
         }
+
     except Exception as error:
         raise HTTPException(
             status_code=500,
-            detail=str(error),
-        )
+            detail="Unable to retrieve database statistics",
+        ) from error
 
-# =========================================================
+
+# ------------------------------------------------------------------
 # Reference Data
-# =========================================================
+# ------------------------------------------------------------------
+
 @app.get("/api/sectors")
 def get_sectors():
     try:
@@ -170,15 +269,18 @@ def get_sectors():
             ORDER BY sector_id
             """
         )
+
     except Exception as error:
         raise HTTPException(
             status_code=500,
-            detail=str(error),
-        )
+            detail="Unable to retrieve sectors",
+        ) from error
 
-# =========================================================
+
+# ------------------------------------------------------------------
 # All Opportunities
-# =========================================================
+# ------------------------------------------------------------------
+
 @app.get("/api/opportunities")
 def get_opportunities():
     try:
@@ -276,38 +378,41 @@ def get_opportunities():
             ORDER BY o.opportunity_id
             """
         )
+
         result = []
+
         for row in rows:
             estimated_cost = (
                 float(row["estimated_cost"])
                 if row["estimated_cost"] is not None
                 else 0
             )
+
             investment_value_million = (
-                estimated_cost / 1000000
+                estimated_cost / 1_000_000
             )
+
             area = ""
+
             if row["area_value"] is not None:
                 try:
-                    area_value = float(
-                        row["area_value"]
-                    )
+                    area_value = float(row["area_value"])
+
                     area = (
                         f"{area_value:,.0f} "
                         f"{row['area_unit_name_ar'] or ''}"
                     ).strip()
-                except (
-                    ValueError,
-                    TypeError,
-                ):
+
+                except (ValueError, TypeError):
                     area = ""
+
             description = (
                 row["project_description_ar"]
                 or "لا يوجد وصف تفصيلي متوفر حاليًا لهذه الفرصة."
             )
-            opportunity_id = row[
-                "opportunity_id"
-            ]
+
+            opportunity_id = row["opportunity_id"]
+
             readiness_checks = fetch_one(
                 """
                 SELECT
@@ -316,36 +421,43 @@ def get_opportunities():
                         FROM financial_data
                         WHERE opportunity_id = :id
                     ) AS has_financial,
+
                     EXISTS (
                         SELECT 1
                         FROM locations
                         WHERE opportunity_id = :id
                     ) AS has_location,
+
                     EXISTS (
                         SELECT 1
                         FROM project_details
                         WHERE opportunity_id = :id
                     ) AS has_details,
+
                     EXISTS (
                         SELECT 1
                         FROM employment
                         WHERE opportunity_id = :id
                     ) AS has_employment,
+
                     EXISTS (
                         SELECT 1
                         FROM opportunity_infrastructure
                         WHERE opportunity_id = :id
                     ) AS has_infrastructure,
+
                     EXISTS (
                         SELECT 1
                         FROM opportunity_site_features
                         WHERE opportunity_id = :id
                     ) AS has_site_features,
+
                     EXISTS (
                         SELECT 1
                         FROM opportunity_approvals
                         WHERE opportunity_id = :id
                     ) AS has_approvals,
+
                     EXISTS (
                         SELECT 1
                         FROM opportunity_attachments
@@ -353,9 +465,10 @@ def get_opportunities():
                     ) AS has_attachments
                 """,
                 {
-                    "id": opportunity_id
+                    "id": opportunity_id,
                 },
             )
+
             readiness_fields = [
                 readiness_checks["has_financial"],
                 readiness_checks["has_location"],
@@ -366,6 +479,7 @@ def get_opportunities():
                 readiness_checks["has_approvals"],
                 readiness_checks["has_attachments"],
             ]
+
             readiness = round(
                 (
                     sum(
@@ -377,109 +491,112 @@ def get_opportunities():
                 )
                 * 100
             )
-            result.append({
-                "code":
-                    row["opportunity_code"],
-                "name":
-                    row["name_ar"],
-                "nameEn":
-                    row["name_en"],
-                "sector":
-                    row["sector_name_ar"]
-                    or "غير محدد",
-                "subSector":
-                    row["sub_sector_name_ar"]
-                    or "غير محدد",
-                "location":
-                    row["location_description_ar"]
-                    or "غير محدد",
-                "status":
-                    row["status_name_ar"]
-                    or "غير محدد",
-                "value":
-                    investment_value_million,
-                "estimatedCost":
-                    estimated_cost,
-                "currency":
-                    row["currency_name_ar"]
-                    or "",
-                "description":
-                    description,
-                "projectType":
-                    row["project_type_name_ar"]
-                    or "غير محدد",
-                "projectScale":
-                    row["project_scale_name_ar"]
-                    or "غير محدد",
-                "ownership":
-                    row["ownership_name_ar"]
-                    or "غير محدد",
-                "investorType":
-                    row["investor_type_name_ar"]
-                    or "غير محدد",
-                "contractType":
-                    row["contract_type_name_ar"]
-                    or "غير محدد",
-                "providerEntity":
-                    row["provider_entity_name_ar"]
-                    or "غير محدد",
-                "area":
-                    area,
-                "latitude":
-                    row["latitude"],
-                "longitude":
-                    row["longitude"],
-                "mapUrl":
-                    row["map_url"],
-                "totalJobs":
-                    row["total_jobs"] or 0,
-                "readiness":
-                    readiness,
-                "investmentModel":
-                    row["financing_model_name_ar"]
-                    or "غير محدد",
-            })
+
+            result.append(
+                {
+                    "code": row["opportunity_code"],
+                    "name": row["name_ar"],
+                    "nameEn": row["name_en"],
+                    "sector": (
+                        row["sector_name_ar"]
+                        or "غير محدد"
+                    ),
+                    "subSector": (
+                        row["sub_sector_name_ar"]
+                        or "غير محدد"
+                    ),
+                    "location": (
+                        row["location_description_ar"]
+                        or "غير محدد"
+                    ),
+                    "status": (
+                        row["status_name_ar"]
+                        or "غير محدد"
+                    ),
+                    "value": investment_value_million,
+                    "estimatedCost": estimated_cost,
+                    "currency": (
+                        row["currency_name_ar"]
+                        or ""
+                    ),
+                    "description": description,
+                    "projectType": (
+                        row["project_type_name_ar"]
+                        or "غير محدد"
+                    ),
+                    "projectScale": (
+                        row["project_scale_name_ar"]
+                        or "غير محدد"
+                    ),
+                    "ownership": (
+                        row["ownership_name_ar"]
+                        or "غير محدد"
+                    ),
+                    "investorType": (
+                        row["investor_type_name_ar"]
+                        or "غير محدد"
+                    ),
+                    "contractType": (
+                        row["contract_type_name_ar"]
+                        or "غير محدد"
+                    ),
+                    "providerEntity": (
+                        row["provider_entity_name_ar"]
+                        or "غير محدد"
+                    ),
+                    "area": area,
+                    "latitude": row["latitude"],
+                    "longitude": row["longitude"],
+                    "mapUrl": row["map_url"],
+                    "totalJobs": row["total_jobs"] or 0,
+                    "readiness": readiness,
+                    "investmentModel": (
+                        row["financing_model_name_ar"]
+                        or "غير محدد"
+                    ),
+                }
+            )
+
         return result
+
     except Exception as error:
-        print(
-            "ERROR loading opportunities:",
-            str(error),
-        )
         raise HTTPException(
             status_code=500,
-            detail=str(error),
-        )
+            detail="Unable to retrieve investment opportunities",
+        ) from error
 
-# =========================================================
-# API: Opportunity By Code
-# =========================================================
+
+# ------------------------------------------------------------------
+# Opportunity By Code
+# ------------------------------------------------------------------
+
 @app.get("/api/opportunities/{code}")
 def get_opportunity(code: str):
     try:
-        result = get_opportunity_by_code(
-            code
-        )
+        result = get_opportunity_by_code(code)
+
         if not result:
             raise HTTPException(
                 status_code=404,
                 detail="Opportunity not found",
             )
+
         return result
+
     except HTTPException:
         raise
+
     except Exception as error:
-        print(
-            "ERROR loading opportunity:",
-            str(error),
-        )
         raise HTTPException(
             status_code=500,
-            detail=str(error),
-        )
+            detail="Unable to retrieve opportunity",
+        ) from error
 
-# =========================================================
+
+# ------------------------------------------------------------------
 # Financial Data
-# =========================================================
+# ------------------------------------------------------------------
+
 @app.get("/api/financial-data")
 def get_financial_data():
     try:
@@ -502,19 +619,20 @@ def get_financial_data():
             ORDER BY f.financial_id
             """
         )
+
     except Exception as error:
         raise HTTPException(
             status_code=500,
-            detail=str(error),
-        )
+            detail="Unable to retrieve financial data",
+        ) from error
 
-# =========================================================
-# Financial By Opportunity ID
-# =========================================================
+
+# ------------------------------------------------------------------
+# Financial Data By Opportunity
+# ------------------------------------------------------------------
+
 @app.get("/api/financial/{opportunity_id}")
-def get_financial(
-    opportunity_id: str
-):
+def get_financial(opportunity_id: str):
     try:
         financial = fetch_one(
             """
@@ -536,26 +654,32 @@ def get_financial(
             LIMIT 1
             """,
             {
-                "id": opportunity_id
+                "id": opportunity_id,
             },
         )
+
         if not financial:
             raise HTTPException(
                 status_code=404,
                 detail="Financial data not found",
             )
+
         return financial
+
     except HTTPException:
         raise
+
     except Exception as error:
         raise HTTPException(
             status_code=500,
-            detail=str(error),
-        )
+            detail="Unable to retrieve financial data",
+        ) from error
 
-# =========================================================
+
+# ------------------------------------------------------------------
 # Administrative Units
-# =========================================================
+# ------------------------------------------------------------------
+
 @app.get("/api/administrative-units")
 def get_administrative_units():
     try:
@@ -572,15 +696,18 @@ def get_administrative_units():
             ORDER BY au.administrative_unit_id
             """
         )
+
     except Exception as error:
         raise HTTPException(
             status_code=500,
-            detail=str(error),
-        )
+            detail="Unable to retrieve administrative units",
+        ) from error
 
-# =========================================================
-# Infrastructure
-# =========================================================
+
+# ------------------------------------------------------------------
+# Infrastructure Types
+# ------------------------------------------------------------------
+
 @app.get("/api/infrastructure")
 def get_infrastructure():
     try:
@@ -592,29 +719,24 @@ def get_infrastructure():
             ORDER BY infrastructure_type_id
             """
         )
+
     except Exception as error:
         raise HTTPException(
             status_code=500,
-            detail=str(error),
-        )
+            detail="Unable to retrieve infrastructure types",
+        ) from error
 
-# =========================================================
-# Cache
-# =========================================================
-@app.get("/api/cache/clear")
-def clear_sheet_cache():
-    return {
-        "status": "ok",
-        "message": "PostgreSQL mode - no Google Sheets API cache is used",
-    }
 
-    from fastapi import HTTPException
-from sqlalchemy import text
-
+# ------------------------------------------------------------------
+# AI Opportunity Data
+# ------------------------------------------------------------------
 
 @app.get("/api/ai/opportunity/{opportunity_code}")
-def get_ai_opportunity_data(opportunity_code: str):
-    query = text("""
+def get_ai_opportunity_data(
+    opportunity_code: str,
+):
+    query = text(
+        """
         SELECT
             io.opportunity_id,
             io.opportunity_code,
@@ -632,23 +754,49 @@ def get_ai_opportunity_data(opportunity_code: str):
         FROM investment_opportunities io
         WHERE io.opportunity_code = :opportunity_code
         LIMIT 1
-    """)
+        """
+    )
 
-    with engine.connect() as connection:
-        result = connection.execute(
-            query,
-            {
-                "opportunity_code": opportunity_code
-            }
-        ).mappings().first()
+    try:
+        with engine.connect() as connection:
+            result = connection.execute(
+                query,
+                {
+                    "opportunity_code": opportunity_code,
+                },
+            ).mappings().first()
 
-    if not result:
+        if not result:
+            raise HTTPException(
+                status_code=404,
+                detail="Opportunity not found",
+            )
+
+        return {
+            "success": True,
+            "opportunity": dict(result),
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as error:
         raise HTTPException(
-            status_code=404,
-            detail="Opportunity not found"
-        )
+            status_code=500,
+            detail="Unable to retrieve AI opportunity data",
+        ) from error
 
+
+# ------------------------------------------------------------------
+# Cache Compatibility Endpoint
+# ------------------------------------------------------------------
+
+@app.get("/api/cache/clear")
+def clear_sheet_cache():
     return {
-        "success": True,
-        "opportunity": dict(result),
+        "status": "ok",
+        "message": (
+            "PostgreSQL mode - "
+            "no Google Sheets API cache is used"
+        ),
     }
