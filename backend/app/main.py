@@ -49,7 +49,16 @@ def seed_database():
             sql_content = seed_file.read_text(
                 encoding="utf-8"
             )
-
+            
+            # Remove PostgreSQL psql-only meta commands
+            sql_lines = []
+            
+            for line in sql_content.splitlines():
+                if not line.lstrip().startswith("\\"):
+                    sql_lines.append(line)
+            
+            sql_content = "\n".join(sql_lines)
+            
             connection.exec_driver_sql(sql_content)
 
     except Exception as error:
