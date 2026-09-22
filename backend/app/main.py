@@ -62,9 +62,12 @@ def seed_database():
             connection.exec_driver_sql(sql_content)
 
     except Exception as error:
-        print(
-            f"Temporary database seed failed: {error}"
-        )
+    import traceback
+
+    print("========== TEMPORARY DATABASE SEED FAILED ==========")
+    print(str(error))
+    traceback.print_exc()
+    print("======================================================")
 
 
 seed_database()
