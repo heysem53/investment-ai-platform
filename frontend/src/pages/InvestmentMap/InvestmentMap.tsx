@@ -13,7 +13,7 @@ import {
   MapContainer,
   TileLayer,
   CircleMarker,
-  Tooltip,
+  Popup,
 } from "react-leaflet";
 
 import "leaflet/dist/leaflet.css";
@@ -53,7 +53,6 @@ const statuses: Array<"الكل" | OpportunityStatus> = [
 
 /* =========================================================
    مركز الخريطة
-   دير الزور
 ========================================================= */
 
 const DEIR_EZ_ZOR_CENTER: [number, number] = [
@@ -447,142 +446,135 @@ export default function InvestmentMap() {
                     />
 
                     {filteredOpportunities.map(
-  (opportunity) => {
-    const coordinates =
-      getOpportunityCoordinates(
-        opportunity
-      );
+                      (opportunity) => {
+                        const coordinates =
+                          getOpportunityCoordinates(
+                            opportunity
+                          );
 
-    return (
-      <CircleMarker
-        key={opportunity.code}
-        center={coordinates}
-        radius={10}
-        pathOptions={{
-          color: "#ffffff",
-          weight: 3,
-          fillColor:
-            getLeafletMarkerColor(
-              opportunity.status
-            ),
-          fillOpacity: 0.9,
-        }}
-        eventHandlers={{
-          mouseover: (event) => {
-            event.target.openTooltip();
-          },
-          mouseout: (event) => {
-            event.target.closeTooltip();
-          },
-        }}
-      >
-        <Tooltip
-          direction="top"
-          offset={[0, -0]}
-          opacity={1}
-          sticky={false}
-          className="investment-map-tooltip"
-        >
-          <div
-            dir="rtl"
-            className="w-[270px] text-right"
-          >
-            {/* رأس البطاقة */}
-            <div className="mb-3 flex items-center justify-between gap-3 border-b border-gray-200 pb-2">
-              <span className="text-xs font-bold text-brand-600">
-                {opportunity.code}
-              </span>
+                        return (
+                          <CircleMarker
+                            key={opportunity.code}
+                            center={coordinates}
+                            radius={10}
+                            pathOptions={{
+                              color: "#ffffff",
+                              weight: 3,
+                              fillColor:
+                                getLeafletMarkerColor(
+                                  opportunity.status
+                                ),
+                              fillOpacity: 0.9,
+                            }}
+                          >
+                            <Popup
+                              closeButton={true}
+                              closeOnClick={true}
+                              autoPan={true}
+                              autoClose={true}
+                              offset={[0, -8]}
+                              className="investment-map-popup"
+                            >
+                              <div
+                                dir="rtl"
+                                className="w-[270px] text-right"
+                              >
 
-              <span
-                className="rounded-full px-2 py-1 text-[10px] font-semibold text-white"
-                style={{
-                  backgroundColor:
-                    getLeafletMarkerColor(
-                      opportunity.status
-                    ),
-                }}
-              >
-                {opportunity.status}
-              </span>
-            </div>
+                                {/* رأس البطاقة */}
 
-            {/* اسم الفرصة */}
-            <div className="mb-3">
-              <div className="text-sm font-bold leading-6 text-gray-800">
-                {opportunity.name}
-              </div>
-            </div>
+                                <div className="mb-3 flex items-center justify-between gap-3 border-b border-gray-200 pb-2">
 
-            {/* البيانات */}
-            <div className="space-y-2 text-xs text-gray-600">
+                                  <span className="text-xs font-bold text-brand-600">
+                                    {opportunity.code}
+                                  </span>
 
-              <div className="flex items-start gap-2">
-                <span className="shrink-0 font-semibold text-gray-500">
-                  القطاع:
-                </span>
+                                  <span
+                                    className="rounded-full px-2 py-1 text-[10px] font-semibold text-white"
+                                    style={{
+                                      backgroundColor:
+                                        getLeafletMarkerColor(
+                                          opportunity.status
+                                        ),
+                                    }}
+                                  >
+                                    {opportunity.status}
+                                  </span>
 
-                <span>
-                  {opportunity.sector}
-                </span>
-              </div>
+                                </div>
 
-              <div className="flex items-start gap-2">
-                <span className="shrink-0 font-semibold text-gray-500">
-                  الموقع:
-                </span>
+                                {/* اسم الفرصة */}
 
-                <span>
-                  {opportunity.location}
-                </span>
-              </div>
+                                <div className="mb-3">
 
-              <div className="flex items-start gap-2">
-                <span className="shrink-0 font-semibold text-gray-500">
-                  القيمة:
-                </span>
+                                  <div className="text-sm font-bold leading-6 text-gray-800">
+                                    {opportunity.name}
+                                  </div>
 
-                <span className="font-semibold text-gray-700">
-                  {opportunity.value.toLocaleString(
-                    "en-US",
-                    {
-                      maximumFractionDigits: 2,
-                    }
-                  )}{" "}
-                  مليون دولار
-                </span>
-              </div>
+                                </div>
 
-            </div>
+                                {/* البيانات */}
 
-            {/* زر التفاصيل */}
-            <Link
-              to={`/opportunities/${opportunity.code}`}
-              className="
-                mt-4
-                block
-                rounded-lg
-                bg-brand-500
-                px-3
-                py-2
-                text-center
-                text-xs
-                font-semibold
-                leading-4
-                text-white
-                no-underline
-                transition
-                hover:bg-brand-600
-              "
-            >
-              عرض تفاصيل الفرصة
-            </Link>
-          </div>
-        </Tooltip>
-      </CircleMarker>
-    );
-  }
-)}
-                       
+                                <div className="space-y-2 text-xs text-gray-600">
+
+                                  <div className="flex items-start gap-2">
+
+                                    <span className="shrink-0 font-semibold text-gray-500">
+                                      القطاع:
+                                    </span>
+
+                                    <span>
+                                      {opportunity.sector}
+                                    </span>
+
+                                  </div>
+
+                                  <div className="flex items-start gap-2">
+
+                                    <span className="shrink-0 font-semibold text-gray-500">
+                                      الموقع:
+                                    </span>
+
+                                    <span>
+                                      {opportunity.location}
+                                    </span>
+
+                                  </div>
+
+                                  <div className="flex items-start gap-2">
+
+                                    <span className="shrink-0 font-semibold text-gray-500">
+                                      القيمة:
+                                    </span>
+
+                                    <span className="font-semibold text-gray-700">
+                                      {opportunity.value.toLocaleString(
+                                        "en-US",
+                                        {
+                                          maximumFractionDigits: 2,
+                                        }
+                                      )}{" "}
+                                      مليون دولار
+                                    </span>
+
+                                  </div>
+
+                                </div>
+
+                                {/* زر التفاصيل */}
+
+                                <Link
+                                  to={`/opportunities/${opportunity.code}`}
+                                  className="mt-4 block !rounded-lg !bg-[#198754] !px-3 !py-2 !text-center !text-xs !font-semibold !leading-4 !text-white !no-underline transition hover:!bg-[#157347]"
+                                >
+                                  عرض تفاصيل الفرصة
+                                </Link>
+
+                              </div>
+                            </Popup>
+                          </CircleMarker>
+                        );
+                      }
+                    )}
 
                   </MapContainer>
 
