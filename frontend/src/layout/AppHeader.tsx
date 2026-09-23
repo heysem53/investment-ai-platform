@@ -289,13 +289,13 @@ const AppHeader: React.FC = () => {
           >
             <img
               className="h-8 w-auto dark:hidden"
-              src="/images/logo/logo.svg"
+              src="/images/logo/Logo_sy.png"
               alt="خارطة الاستثمار الذكية"
             />
 
             <img
               className="hidden h-8 w-auto dark:block"
-              src="/images/logo/logo-dark.svg"
+              src="/images/logo/Logo_sy.png"
               alt="خارطة الاستثمار الذكية"
             />
           </Link>

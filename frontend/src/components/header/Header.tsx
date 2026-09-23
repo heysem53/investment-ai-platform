@@ -161,13 +161,13 @@ const Header: React.FC<HeaderProps> = ({ onClick, onToggle }) => {
             <Link to="/" className="lg:hidden">
               <img
                 className="h-9 w-auto dark:hidden"
-                src="/images/logo/logo.svg"
+                src="/images/logo/Logo_sy.png"
                 alt="خارطة الاستثمار الذكية"
               />
 
               <img
                 className="hidden h-9 w-auto dark:block"
-                src="/images/logo/logo-dark.svg"
+                src="/images/logo/Logo_sy.png"
                 alt="خارطة الاستثمار الذكية"
               />
             </Link>
