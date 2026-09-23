@@ -25,7 +25,7 @@ export default function UserInfoCard() {
                 First Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Musharof
+                Haitham
               </p>
             </div>
 
@@ -34,7 +34,7 @@ export default function UserInfoCard() {
                 Last Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Chowdhury
+                Alaiad
               </p>
             </div>
 
@@ -43,16 +43,16 @@ export default function UserInfoCard() {
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                randomuser@pimjo.com
+                haitham.alaiad@deirezzor.gov.sy
               </p>
-            </div>
+            </div> 
 
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Phone
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                +09 363 398 46
+                00963964620275
               </p>
             </div>
 
@@ -61,7 +61,7 @@ export default function UserInfoCard() {
                 Bio
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Team Manager
+                Property and Investment Manager
               </p>
             </div>
           </div>
@@ -148,7 +148,7 @@ export default function UserInfoCard() {
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Last Name</Label>
-                    <Input type="text" value="Chowdhury" />
+                    <Input type="text" value="Alaiad" />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">

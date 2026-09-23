@@ -440,13 +440,16 @@ const AppSidebar: React.FC = () => {
       >
         {isSidebarVisible ? (
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center">
+            <Link
+              to="/"
+              className="flex h-11 w-11 shrink-0 items-center justify-center"
+            >
               <img
                 src="/images/logo/Logo_sy.png"
                 alt="خارطة الاستثمار الذكية"
                 className="h-11 w-11 rounded-xl object-contain"
               />
-            </div>
+            </Link>
 
             <div className="min-w-0">
               <div className="truncate text-base font-bold text-gray-800 dark:text-white">
