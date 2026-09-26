@@ -3,8 +3,10 @@ import type {
   OpportunityStatus,
 } from "../types/opportunity";
 
-const API_BASE_URL = "http://127.0.0.1:8000";
-
+const API_BASE_URL =
+  window.location.hostname === "investment-ai-frontend.onrender.com"
+    ? "https://investment-ai-platform.onrender.com"
+    : "http://127.0.0.1:8000";
 /* =========================================================
    جميع الفرص من FastAPI
 ========================================================= */
