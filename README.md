@@ -621,25 +621,35 @@ text
 investment-ai-platform/
 
 │
+
 ├── backend/
-│   ├── app/
-│   ├── requirements.txt
-│   └── ...
+
+│      ├── app/
+
+│      ├── requirements.txt
+
+│      └── ...
 │
+
 ├── frontend/
-│   ├── src/
-│   ├── public/
-│   ├── package.json
-│   └── ...
+
+│      ├── src/
+
+│      ├── public/
+
+│      ├── package.json
+
+│      └── ...
 │
+
 └── README.md
 
 
-Backend
+- Backend
 
 Contains the backend application, database configuration, API routes, services, data models, and analytical logic.
 
-Frontend
+- Frontend
 
 Contains the React components, pages, services, styles, images, and other frontend assets.
 
